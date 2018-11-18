@@ -1,0 +1,20 @@
+{% extends "jira_report_dashboard_layout.html" %}
+{% block body %}
+
+<table><tr>
+<h2>
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team RCA Status Charts</b></p>
+</h2>
+<td><img src="cid:image1" border=0></td>
+<h2>
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team AP Status Charts</b></p>
+</h2>
+<td><img src="cid:image2" border=0></td>
+</tr></table>
+
+<h3>
+<a class="cur STRING_BASE" href="http://n-5cg5010gn7.nsn-intra.net:3344/dashboard"><strong>Detail Information</strong></a> 
+</h3>
+<hr>
+
+{% endblock %}

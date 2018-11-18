@@ -1,0 +1,42 @@
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<style>
+body {
+	padding-top: 60px;
+	padding-bottom: 100px;
+}
+</style>
+<link href="/static/css/bootstrap.css" rel="stylesheet">
+<link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
+<link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Log in with JIRA account for JIRA Update</h2>
+    <div class="control-group">
+        <div class="controls">
+          <input type="text" id="username" name="username" class="input-xlarge"
+            placeholder="Enter Username" required>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <input type="password" id="password" name="password" class="input-xlarge"
+            placeholder="Enter Password" required>
+        </div>
+    </div>
+
+     <div class="control-group">
+        <div class="controls">
+          <input type="checkbox" id="remember_me" name="remember_me" > Keep me login</input>
+        </div>
+    </div>
+
+    <div class="control-group">
+        <div class="controls">
+          <button type="submit" id="submitlogin" value="button" class="btn btn-success">Sign in</button>
+        </div>
+    </div>
+  </form>
+{% endblock %}

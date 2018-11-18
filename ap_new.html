@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="/newap" method=post class="form-horizontal">
+	<h2>Add New AP</h2>
+<table>
+<p>Use this form to Edit your internal task and status( No More than 1024 chars,Only English,No Chinese):</p>
+<tr><td>APID:</td><td><textarea name='APID' style="width:800px;height:40px;">{{APID}} </textarea></td></tr>
+<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:40px;">{{PRID}} </textarea></td></tr>
+<tr><td>APDescription:</td><td><textarea name='APDescription' style="width:800px;height:40px;">{{APDescription}} </textarea></td></tr>
+<tr><td>APCreatedDate:</td><td><textarea name='APCreatedDate' style="width:800px;height:40px;">{{APCreatedDate}} </textarea></td></tr>
+<tr><td>APDueDate:</td><td><textarea name='APDueDate' style="width:800px;height:40px;">{{APDueDate}} </textarea></td></tr>
+<tr><td>APCompletedOn:</td><td><textarea name='APCompletedOn' style="width:800px;height:40px;">{{APCompletedOn}} </textarea></td></tr>
+<tr><td>IsApCompleted:</td><td><textarea name='IsApCompleted' style="width:800px;height:40px;">{{IsApCompleted}} </textarea></td></tr>
+<tr><td>APAssingnedTo:</td><td><textarea name='APAssingnedTo' style="width:800px;height:40px;">{{APAssingnedTo}} </textarea></td></tr>
+<tr><td>QualityOwner:</td><td><textarea name='QualityOwner' style="width:800px;height:40px;">{{QualityOwner}}</textarea></td></tr>
+</table>
+<div class="control-group" style="margin-left: -66px;" >
+	<div class="controls">
+	  <button type="submit" style="margin-right:0px;" class="btn btn-success">Add New</button>
+	  <a href="{{ url_for('ap_home') }}">Back to list</a>
+	</div>
+</div>
+  </form>
+{% endblock %}

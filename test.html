@@ -1,0 +1,19 @@
+
+<html>
+    <head>
+    <title>Simple</title>
+    <script  >
+        function fillB(){
+            var a=document.getElementById("inputA").value
+            document.getElementById("inputB").value=a;
+        }
+    </script>
+    </head>
+    <body>
+          
+        <form>
+             <input type = "text" id="inputA" value = "" onkeyup="fillB()"/>
+              <input type = "text" id="inputB"value = "" />
+        </form>
+    </body>
+</html>

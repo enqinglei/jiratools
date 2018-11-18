@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+	<h2>Add New LongCycleTime Pronto</h2>
+<table>
+<p>Use this form to Edit LongCycleTime RCA and status( No More than 1024 chars,Only English,No Chinese):</p>
+<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:40px;">{{PRID}} </textarea></td></tr>
+<tr><td>PRTitle:</td><td><textarea name='PRTitle' style="width:800px;height:40px;">{{PRTitle}} </textarea></td></tr>
+<tr><td>PRReportedDate:</td><td><textarea name='PRReportedDate' style="width:800px;height:40px;">{{PRReportedDate}} </textarea></td></tr>
+<tr><td>PRClosedDate:</td><td><textarea name='PRClosedDate' style="width:800px;height:40px;">{{PRClosedDate}} </textarea></td></tr>
+<tr><td>PROpenDays:</td><td><textarea name='PROpenDays' style="width:800px;height:40px;">{{PROpenDays}} </textarea></td></tr>
+<tr><td>IsLongCycleTime:</td><td><textarea name='IsLongCycleTime' style="width:800px;height:40px;">{{IsLongCycleTime}} </textarea></td></tr>
+<tr><td>PRRcaCompleteDate:</td><td><textarea name='PRRcaCompleteDate' style="width:800px;height:40px;">{{PRRcaCompleteDate}} </textarea></td></tr>
+<tr><td>IsCatM:</td><td><textarea name='IsCatM' style="width:800px;height:40px;">{{IsCatM}} </textarea></td></tr>
+<tr><td>LongCycleTimeRcaIsCompleted:</td><td><textarea name='LongCycleTimeRcaIsCompleted' style="width:800px;height:40px;">{{LongCycleTimeRcaIsCompleted}} </textarea></td></tr>
+<tr><td>LongCycleTimeRootCause:</td><td><textarea name='LongCycleTimeRootCause' style="width:800px;height:40px;">{{LongCycleTimeRootCause}} </textarea></td></tr>
+<tr><td>Handler:</td><td><textarea name='Handler' style="width:800px;height:40px;" >{{Handler}} </textarea> </td></tr>
+</table>
+<br>
+
+<div class="control-group">
+	<div class="controls">
+	  <button type="submit" style="margin-right:0px;" class="btn btn-success">Add New</button>
+	  <a href="{{ url_for('longcycletimerca_home') }}">Back to list</a>
+	</div>
+</div>
+  </form>
+{% endblock %}

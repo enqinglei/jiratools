@@ -1,0 +1,90 @@
+{% extends "layout.html" %}
+{% block body %}
+<div style = "text-align:left;">	
+<div id="main" class="container">
+    <h2>{{headermessage}}: <b style="color:red;">{{count}}</b> <div style = "text-align:center;"><a href="{{url_for('rca_done')}}" class="btn btn-large btn-primary">RCA Done</a> <a href="{{url_for('rca_undone')}}" class="btn btn-large btn-primary">RCA Undone</a> <a href="{{url_for('rca_noneed')}}" class="btn btn-large btn-primary">RCA NoNeed</a> <a href="{{url_for('rca_home')}}" class="btn btn-large btn-primary">RCA All</a> <a href="{{url_for('rca_jira')}}" class="btn btn-large btn-primary">RCA OnJIRA</a> </div> <div style = "text-align:right;"> <a href="{{url_for('toexcel')}}" class="btn btn-large btn-primary">Exmport to Excel</a></div>  </h2> 
+    <table class="table table-hover">
+      <tr>
+		<th>JiraIssueId
+        <th>JiraIssuePriority
+		<th>JiraIssueSourceList
+		<th>JiraIssueBusinessUnit
+		<th>JiraIssueBusinessLine
+		<th>JiraIssueProductLine
+		<th>JiraIssueCustomerName
+		<th>JiraIssueFeature
+        <th>JiraIssueFeatureComponent
+        <th>JiraIssueOther
+		<th>JiraIssueDetails
+		<th>JiraIssueType
+		<th>JiraIssueCaseType
+		<th>JiraIssueStatus
+		<th>JiraIssueLabels
+        <th>JiraIssueAssignee
+        <th>JiraIssueReporter
+        <th>PRID
+        <th>PRTitle
+        <th>PRRcaEdaAssessor
+        <th>PRRelease
+        <th>PRAttached
+        <th>PRSeverity
+		<th>PRGroupInCharge
+		<th>PRProduct
+		<th>ReportedBy
+		<th>FaultCoordinator		
+ 
+      {%- for todo in todos %}
+      <tr class={{ "success" if todo.done }}>
+        <td><a href="/todos/{{todo.JiraIssueId}}">{{todo.JiraIssueId}}</a>
+				
+		<td>{{todo.JiraIssuePriority}} 			
+		<td>{{todo.JiraIssueSourceList}} 		
+		<td>{{todo.JiraIssueBusinessUnit}} 		
+		<td>{{todo.JiraIssueBusinessLine}} 		
+		<td>{{todo.JiraIssueProductLine}} 		
+		<td>{{todo.JiraIssueCustomerName}} 		
+		<td>{{todo.JiraIssueFeature}} 			
+		<td>{{todo.JiraIssueFeatureComponent}}  
+		<td>{{todo.JiraIssueOther}} 
+		<td><a href="https://jiradc.int.net.nokia.com/browse/{{todo.JiraIssueId}}">{{ todo.JiraIssueId}} Details </a>		
+		<td>{{todo.JiraIssueType}} 				
+		<td>{{todo.JiraIssueCaseType}} 			
+		<td>{{todo.JiraIssueStatus}} 			
+		<td>{{todo.JiraIssueLabels}} 			
+		<td>{{todo.JiraIssueAssignee}} 			
+		<td>{{todo.JiraIssueReporter}} 
+		<td><a href="https://pronto.inside.nsn.com/pronto/problemReportSearch.html?freeTextdropDownID=prId&searchTopText={{todo.PRID }}&HomeFlag=true">{{ todo.PRID}}</a>								
+		<td>{{todo.PRTitle}} 					
+		<td>{{todo.PRRcaEdaAssessor}} 			
+		<td>{{todo.PRRelease}} 					
+		<td>{{todo.PRAttached}} 				
+		<td>{{todo.PRSeverity}} 				
+        <td>{{todo.PRGroupInCharge}} 			
+        <td>{{todo.PRProduct}} 					
+		<td>{{todo.ReportedBy}} 				
+        <td>{{todo.FaultCoordinator}} 				
+		
+        
+        
+        
+        
+        
+        
+        
+        
+		
+		
+		
+		
+        
+		
+        <td>{{ todo.Handler}}</td>
+		
+      {%- endfor %}
+    </table>
+    <p>
+      <div style = "text-align:left;"> <a href="{{ url_for('new') }}" class="btn btn-large btn-primary">Add New Pronto </a> <a href="{{url_for('fromexcel')}}" class="btn btn-large btn-primary">Import from Excel</a>
+</div>
+  
+</div>
+{% endblock %}

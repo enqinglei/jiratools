@@ -1,0 +1,41 @@
+{% extends "longcycletimercareport_layout.html" %}
+{% block body %}
+<div style = "text-align:left;">	
+<div id="main" class="container">
+    <h2>LongCycleTime RCA Items:  <b style="color:red;">{{count}}</b></h2> 
+    <table class="table table-hover">
+      <tr>
+		<th>PRID
+        <th>PRTitle
+        <th>PRReportedDate
+        <th>PRClosedDate
+        <th>PROpenDays
+		<th>PRRcaCompleteDate
+        <th>IsLongCycleTime
+        <th>IsCatM
+        <th>LongCycleTimeRcaIsCompleted
+		<th>LongCycleTimeRootCause		
+        <th>Handler
+      {%- for todo in todos %}
+      <tr class={{ "success" if todo.done }}>
+        <td><a href="http://n-5cg5010gn7.nsn-intra.net:3344/todolongcycletimercas/{{todo.PRID}}">{{ todo.PRID }}</a>
+
+		<td>{{ todo.PRTitle}}
+        <td>{{ todo.PRReportedDate}}
+        <td>{{ todo.PRClosedDate}}
+        <td>{{ todo.PROpenDays}}		
+		<td>{{ todo.PRRcaCompleteDate}}
+        <td>{{ todo.IsLongCycleTime}}
+        <td>{{ todo.IsCatM}}
+        <td>{{ todo.LongCycleTimeRcaIsCompleted}}
+		<td>{{ todo.LongCycleTimeRootCause}}	
+        <td>{{ todo.Handler}}</td>
+		
+      {%- endfor %}
+    </table>
+    <p>
+
+</div>
+  
+</div>
+{% endblock %}

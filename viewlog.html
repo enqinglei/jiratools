@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+<h2>{{ the_title }}</h2>
+
+<table>
+    <tr>
+        {% for row_title in the_row_titles %}
+            <th>{{row_title}}</th>
+        {% endfor %}
+    </tr>
+    {%- for todo in the_data %}
+        <tr>
+		<td>{{ todo.id}}
+		<td>{{ todo.loginAccount}}
+		<td>{{ todo.loginLocation}}
+		<td>{{ todo.ipAddress   }}
+		<td>{{ todo.browserType }}
+		<td>{{ todo.deviceType  }}
+		<td>{{ todo.osType      }}
+		<td>{{ todo.operationType }} 
+		<td>{{ todo.logTime       }} 
+        <td>{{ todo.prIdorApId    }} 
+        <td>{{ todo.log1 }} 
+        <td>{{ todo.log2 }} 
+		<td>{{ todo.log3 }} 
+        <td>{{ todo.log4 }} 		
+		<td>{{ todo.log5 }} 
+        <td>{{ todo.log6 }} 
+        <td>{{ todo.log7 }} 
+        <td>{{ todo.log8 }} 
+        <td>{{ todo.log9 }} 
+        <td>{{ todo.log10 }}
+        <td>{{ todo.log11 }}
+        <td>{{ todo.log12 }}
+        </tr>
+    {%- endfor %}
+</table>
+
+{% endblock %}

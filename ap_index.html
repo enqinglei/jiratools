@@ -1,0 +1,45 @@
+{% extends "layout.html" %}
+{% block body %}
+<div style = "text-align:left;">
+<div id="main" class="container">
+    <h2>All APs:  <b style="color:red;">{{count}}</b>  	<div style = "text-align:right;"> <a href="{{url_for('toapexcel')}}" class="btn btn-large btn-primary">Exmport to Excel</a> </h2> 
+    <table class="table table-hover">
+      <tr>
+		<th>APID
+        <th>PRID
+        <th>APDescription
+        <th>APCreatedDate
+        <th>APDueDate
+        <th>APCompletedOn
+        <th>IsApCompleted
+		<th>InjectionRootCauseEdaCause
+		<th>ApCategory
+		<th>ShouldHaveBeenDetected
+		<th>ApJiraId
+        <th>APAssingnedTo
+        <th>QualityOwner
+      {%- for todo in todos %}
+      <tr class={{ "success" if todo.done }}>
+        <td><a href="/todoaps/{{todo.APID}}">{{ todo.APID }}</a>
+
+        <td>{{ todo.PRID}}
+        <td>{{ todo.APDescription}}
+        <td>{{ todo.APCreatedDate}}
+        <td>{{ todo.APDueDate}}
+        <td>{{ todo.APCompletedOn}}
+        <td>{{ todo.IsApCompleted}}
+		<td>{{ todo.InjectionRootCauseEdaCause}}
+        <td>{{ todo.ApCategory}}
+        <td>{{ todo.ShouldHaveBeenDetected}}
+		<td><a href="https://jiradc.int.net.nokia.com/browse/{{todo.ApJiraId}}">{{ todo.ApJiraId}}</a>
+        <td>{{ todo.APAssingnedTo}}
+        <td>{{ todo.QualityOwner}}</td>
+		
+      {%- endfor %}
+    </table>
+    <p>
+      <div style = "text-align:left;"><a href="{{ url_for('newap') }}" class="btn btn-large btn-primary">Add New AP </a> <a href="{{url_for('importapfromexcel')}}" class="btn btn-large btn-primary">Import from 5-Why Excel</a>
+</div>
+  
+</div>
+{% endblock %}

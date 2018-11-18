@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+{% block body %}
+<div style = "text-align:left;">	
+<div id="main" class="container">
+    <h2>{{headermessage}}: <b style="color:red;">{{count}}</b> <div style = "text-align:center;"><a href="{{url_for('customer_rca_done')}}" class="btn btn-large btn-primary">Customer RCA Done</a> <a href="{{url_for('customer_rca_undone')}}" class="btn btn-large btn-primary">Customer RCA Undone</a> <a href="{{url_for('customer_home')}}" class="btn btn-large btn-primary">Customer RCA All</a> </div> <div style = "text-align:right;"> <a href="{{url_for('toexcel')}}" class="btn btn-large btn-primary">Exmport to Excel</a></div>  </h2> 
+    <table class="table table-hover">
+      <tr>
+		<th>PRID
+        <th>PRTitle
+		<th>LTECategory
+		<th>JiraRcaBeRequested
+		<th>JiraIssueStatus
+		<th>JiraIssueAssignee
+		<th>RcaSubtaskJiraId
+        <th>PRReportedDate
+        <th>PRClosedDate
+		<th>PROpenDays
+		<th>JiraRcaDeliveryOnTimeRating
+		<th>JiraRcaPreparedQualityRating
+		<th>PRRcaCompleteDate
+        <th>PRRelease
+        <th>PRAttached
+        <th>IsLongCycleTime
+        <th>IsCatM
+        <th>IsRcaCompleted
+        <th>NoNeedDoRCAReason
+        <th>RootCauseCategory
+        <th>FunctionArea
+		<th>CodeDeficiencyDescription
+		<th>CorrectionDescription
+		<th>RootCause 
+		<th>TeamAssessor 
+        <th>FixedBy		
+        <th>LineManager
+      {%- for todo in todos %}
+      <tr class={{ "success" if todo.done }}>
+        <td><a href="/todos/{{todo.PRID}}">{{ todo.PRID }}</a>
+		
+		<td>{{ todo.PRTitle}}
+		<td>{{ todo.LteCategory}}
+		<td>{{ todo.JiraRcaBeReqested}}
+		<td>{{ todo.JiraIssueStatus}}
+		<td>{{ todo.JiraIssueAssignee}}
+		<td><a href="https://jiradc.int.net.nokia.com/browse/{{todo.RcaSubtaskJiraId}}">{{ todo.RcaSubtaskJiraId}}</a>
+        <td>{{ todo.PRReportedDate}}
+        <td>{{ todo.PRClosedDate}}
+        <td>{{ todo.PROpenDays}}
+		<td>{{ todo.JiraRcaDeliveryOnTimeRating}}
+        <td>{{ todo.JiraRcaPreparedQualityRating}}		
+		<td>{{ todo.PRRcaCompleteDate}}
+        <td>{{ todo.PRRelease}}
+        <td>{{ todo.PRAttached}}
+        <td>{{ todo.IsLongCycleTime}}
+        <td>{{ todo.IsCatM}}
+        <td>{{ todo.IsRcaCompleted}}
+        <td>{{ todo.NoNeedDoRCAReason}}
+        <td>{{ todo.RootCauseCategory}}
+        <td>{{ todo.FunctionArea}}
+		<td>{{ todo.CodeDeficiencyDescription}}
+		<td>{{ todo.CorrectionDescription}}
+		<td>{{ todo.RootCause}}
+		<td>{{ todo.TeamAssessor}} 
+        <td>{{ todo.IntroducedBy}}		
+        <td>{{ todo.Handler}}</td>
+		
+      {%- endfor %}
+    </table>
+    <p>
+      <div style = "text-align:left;"> <a href="{{ url_for('new') }}" class="btn btn-large btn-primary">Add New Pronto </a> <a href="{{url_for('fromexcel')}}" class="btn btn-large btn-primary">Import from Excel</a>
+</div>
+  
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Edit RCA or Update RCA status</h2>
+<table>
+<p>Use this form to Edit LongCycleTimeRca and status update( No More than 1024 chars,Only English,No Chinese):</p>
+<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:30px;">{{todo.PRID}} </textarea></td></tr>
+<tr><td>PRTitle:</td><td><textarea name='PRTitle' style="width:800px;height:30px;">{{todo.PRTitle}} </textarea></td></tr>
+<tr><td>PRReportedDate:</td><td><textarea name='PRReportedDate' style="width:800px;height:30px;">{{todo.PRReportedDate}} </textarea></td></tr>
+<tr><td>PRClosedDate:</td><td><textarea name='PRClosedDate' style="width:800px;height:30px;">{{todo.PRClosedDate}} </textarea></td></tr>
+<tr><td>PROpenDays:</td><td><textarea name='PROpenDays' style="width:800px;height:30px;">{{todo.PROpenDays}} </textarea></td></tr>
+<tr><td>PRRcaCompleteDate:</td><td><textarea name='PRRcaCompleteDate' style="width:800px;height:30px;">{{todo.PRRcaCompleteDate}} </textarea></td></tr>
+<tr><td>IsLongCycleTime:</td><td><input type="text" name="IsLongCycleTime" id="t" value ='{{todo.IsLongCycleTime}}' onFocus="showSelect();" style=" width:800px; height:30px">     
+<select name="sel" id="sel" style="display:none; width:815px;height:40px" onchange="document.getElementById('t').value=this.value">  
+<option value='{{todo.IsLongCycleTime}}'>{{todo.IsLongCycleTime}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>  
+</select>  </td></tr>
+<tr><td>IsCatM:</td><td><input type="text" name="IsCatM" id="t1" value ='{{todo.IsCatM}}' onFocus="showSelect1();" style=" width:800px; height:30px">     
+<select name="sel1" id="sel1" style="display:none; width:815px;height:40px" onchange="document.getElementById('t1').value=this.value" >  
+<option value='{{todo.IsCatM}}'>{{todo.IsCatM}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>   
+</select>  </td></tr>
+<tr><td>LongCycleTimeRcaIsCompleted:</td><td><input type="text" name="LongCycleTimeRcaIsCompleted" id="t2" value ='{{todo.LongCycleTimeRcaIsCompleted}}' onFocus="showSelect2();" style=" width:800px; height:30px">     
+<select name="sel2" id="sel2" style="display:none; width:815px;height:40px" onchange="document.getElementById('t2').value=this.value">  
+<option value='{{todo.LongCycleTimeRcaIsCompleted}}'>{{todo.LongCycleTimeRcaIsCompleted}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>  
+</select>  </td></tr>
+<tr><td>LongCycleTimeRootCause:</td><td><textarea name='LongCycleTimeRootCause' style="width:800px;height:40px;" >{{todo.LongCycleTimeRootCause}} </textarea> </td></tr>
+<tr><td>NoNeedDoRCAReason:</td><td><textarea name='NoNeedDoRCAReason' style="width:800px;height:40px;" >{{todo.NoNeedDoRCAReason}} </textarea> </td></tr>
+<tr><td>Handler:</td><td><input type="text" name="Handler" id="t3" value ='{{todo.Handler}}' onFocus="showSelect3();" style=" width:800px; height:30px">     
+<select name="sel3" id="sel3" style="display:none; width:815px;height:40px" onchange="document.getElementById('t3').value=this.value">  
+<option value='{{todo.Handler}}'>{{todo.Handler}}</option> 
+<option value="chenlong">chenlong</option> 
+<option value="yangjinyong">yangjinyong</option>  
+<option value="lanshenghai">lanshenghai</option>  
+<option value="lizhongyuan">lizhongyuan</option>  
+<option value="liumingjing">liumingjing</option>  
+<option value="xiezhen">xiezhen</option>  
+<option value="zhangyijie">zhangyijie</option>
+<option value="leienqing">leienqing</option>  
+</select>  </td></tr>
+</table>
+
+
+
+
+<div class="control-group" style="margin-left:26px">
+	<div class="controls">
+	  <button type="submit" class="btn btn-success">Update</button>
+	  <a href="{{url_for('importapfromexcel')}}" class="btn btn-success">Import from Excel</a>
+	  <a href="{{ url_for('longcycletimercaindex') }}">Back to list</a>
+	</div>
+</div>
+</form>
+<script type="text/javascript">  
+function showSelect(){  
+   var _t = document.getElementById('t');  
+   var _s = document.getElementById('sel');  
+   if( _t.style.display == ''){  
+       _t.style.display = 'none';  
+   }  
+   else{  
+       _t.style.display = '';  
+    }  
+   if ( _s.style.display == 'none' ){  
+        _s.style.display = '';  
+    }  
+    else{  
+        _s.style.display = 'none';  
+    }  
+}  
+function showSelect1(){  
+   var _t1 = document.getElementById('t1');  
+   var _s1 = document.getElementById('sel1');  
+   if( _t1.style.display == ''){  
+       _t1.style.display = 'none';  
+   }  
+   else{  
+       _t1.style.display = '';  
+    }  
+   if ( _s1.style.display == 'none' ){  
+        _s1.style.display = '';  
+    }  
+    else{  
+        _s1.style.display = 'none';  
+    }  
+} 
+function showSelect2(){  
+   var _t2 = document.getElementById('t2');  
+   var _s2 = document.getElementById('sel2');  
+   if( _t2.style.display == ''){  
+       _t2.style.display = 'none';  
+   }  
+   else{  
+       _t2.style.display = '';  
+    }  
+   if ( _s2.style.display == 'none' ){  
+        _s2.style.display = '';  
+    }  
+    else{  
+        _s2.style.display = 'none';  
+    }  
+} 
+function showSelect3(){  
+   var _t3 = document.getElementById('t3');  
+   var _s3 = document.getElementById('sel3');  
+   if( _t3.style.display == ''){  
+       _t3.style.display = 'none';  
+   }  
+   else{  
+       _t3.style.display = '';  
+    }  
+   if ( _s3.style.display == 'none' ){  
+        _s3.style.display = '';  
+    }  
+    else{  
+        _s3.style.display = 'none';  
+    }  
+} 
+</script>  
+{% endblock %}

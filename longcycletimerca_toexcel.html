@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block body %}
+<div id="main" class="container">
+    <h2>Export to an Excel with (.xls): </h2>
+
+<form action="/tolongcycletimercaexcel" method="post" >
+ 
+ <input type="submit" name="submit" class="btn btn-large btn-primary" value="Download it!" />
+
+</form>
+{% endblock %}

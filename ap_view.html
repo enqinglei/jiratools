@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Edit AP or Update AP status: <input name='button' class="btn btn-large btn-primary" value='Delete' type='SUBMIT'></h2>
+<table>
+<p>Use this form to Edit your internal task and status( No More than 1024 chars,Only English,No Chinese):</p>
+<tr><td>APID:</td><td><textarea name='APID' style="width:800px;height:40px;">{{todo.APID}} </textarea></td></tr>
+<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:40px;">{{todo.PRID}} </textarea></td></tr>
+<tr><td>APDescription:</td><td><textarea name='APDescription' style="width:800px;height:40px;">{{todo.APDescription}} </textarea></td></tr>
+<tr><td>ApJiraId:</td><td><input type="text" name="ApJiraId" value ='{{todo.ApJiraId}}' style=" width:800px; height:30px">
+
+<tr><td>APCreatedDate:</td><td>
+<div class="input-append date" id="APCreatedDate" data-date="" data-date-format="yyyy-mm-dd">
+    <input class="span2" size="100" name='APCreatedDate' type="text" value='{{todo.APCreatedDate}}'  >
+    <span class="add-on"><i class="icon-remove"></i></span>
+    <span class="add-on"><i class="icon-th"></i></span>
+</div>  
+</td></tr> 
+
+
+<tr><td>APDueDate:</td><td>
+<div class="input-append date" id="APDueDate" data-date="" data-date-format="yyyy-mm-dd">
+    <input class="span2" size="100" name='APDueDate' type="text" value='{{todo.APDueDate}}'  >
+    <span class="add-on"><i class="icon-remove"></i></span>
+    <span class="add-on"><i class="icon-th"></i></span>
+</div>  
+</td></tr> 
+
+
+<tr><td>APCompletedOn:</td><td>
+<div class="input-append date" id="xx" data-date="" data-date-format="yyyy-mm-dd">
+    <input class="span2" size="100" name='APCompletedOn' type="text" value='{{todo.APCompletedOn}}'  >
+    <span class="add-on"><i class="icon-remove"></i></span>
+    <span class="add-on"><i class="icon-th"></i></span>
+</div>  
+</td></tr>
+
+
+<tr><td>IsApCompleted:</td><td><input type="text" name="IsApCompleted" id="t2" value ='{{todo.IsApCompleted}}' onFocus="showSelect2();" style=" width:800px; height:30px">     
+<select name="sel2" id="sel2" style="display:none; width:815px;height:40px" onchange="document.getElementById('t2').value=this.value">  
+<option value='{{todo.IsApCompleted}}'>{{todo.IsApCompleted}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>  
+</select>  </td></tr>
+<tr><td>APAssingnedTo:</td><td><textarea name='APAssingnedTo' style="width:800px;height:40px;">{{todo.APAssingnedTo}} </textarea></td></tr>
+
+<tr><td>QualityOwner:</td><td><input type="text" name="QualityOwner" id="t3" value ='{{todo.QualityOwner}}' onFocus="showSelect3();" style=" width:800px; height:30px">     
+<select name="sel3" id="sel3" style="display:none; width:815px;height:40px" onchange="document.getElementById('t3').value=this.value">  
+<option value='{{todo.QualityOwner}}'>{{todo.QualityOwner}}</option> 
+<option value="chenlong">chenlong</option> 
+<option value="yangjinyong">yangjinyong</option>  
+<option value="lanshenghai">lanshenghai</option>  
+<option value="lizhongyuan">lizhongyuan</option>  
+<option value="liumingjing">liumingjing</option>  
+<option value="xiezhen">xiezhen</option>  
+<option value="zhangyijie">zhangyijie</option>
+<option value="leienqing">leienqing</option>  
+</select>  </td></tr>
+</table>
+
+<div class="control-group" style="margin-left:-66px">
+	<div class="controls">
+	  <!---<button type="submit" class="btn btn-success">Update</button>-->
+	  	  <input name='button' class="btn btn-success" value='Update' type='SUBMIT'> <input name='button' class="btn btn-success" value='Delete' type='SUBMIT'>
+		  <a href="{{url_for('uploadevidence')}}" class="btn btn-success"> UploadEvidenceToJIRA </a>
+	  <a href="{{ url_for('apindex') }}">Back to list</a>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript">  
+$('#APCreatedDate').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,    
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+		minuteStep:6,  
+	 initialDate: new Date(),  
+});
+
+$('#APDueDate').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,  
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+	 initialDate: new Date(),  
+}); 
+
+$('#xx').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,  
+
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+
+	 initialDate: new Date(),  
+}); 
+
+
+$('#sss').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,  
+	    format:'yyyy-MM-dd',  
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+		minuteStep:6,  
+	  showMeridian: 1, 
+	 initialDate: new Date(),  
+});
+
+function showSelect(){  
+   var _t = document.getElementById('t');  
+   var _s = document.getElementById('sel');  
+   if( _t.style.display == ''){  
+       _t.style.display = 'none';  
+   }  
+   else{  
+       _t.style.display = '';  
+    }  
+   if ( _s.style.display == 'none' ){  
+        _s.style.display = '';  
+    }  
+    else{  
+        _s.style.display = 'none';  
+    }  
+}  
+function showSelect1(){  
+   var _t1 = document.getElementById('t1');  
+   var _s1 = document.getElementById('sel1');  
+   if( _t1.style.display == ''){  
+       _t1.style.display = 'none';  
+   }  
+   else{  
+       _t1.style.display = '';  
+    }  
+   if ( _s1.style.display == 'none' ){  
+        _s1.style.display = '';  
+    }  
+    else{  
+        _s1.style.display = 'none';  
+    }  
+} 
+function showSelect2(){  
+   var _t2 = document.getElementById('t2');  
+   var _s2 = document.getElementById('sel2');  
+   if( _t2.style.display == ''){  
+       _t2.style.display = 'none';  
+   }  
+   else{  
+       _t2.style.display = '';  
+    }  
+   if ( _s2.style.display == 'none' ){  
+        _s2.style.display = '';  
+    }  
+    else{  
+        _s2.style.display = 'none';  
+    }  
+} 
+function showSelect3(){  
+   var _t3 = document.getElementById('t3');  
+   var _s3 = document.getElementById('sel3');  
+   if( _t3.style.display == ''){  
+       _t3.style.display = 'none';  
+   }  
+   else{  
+       _t3.style.display = '';  
+    }  
+   if ( _s3.style.display == 'none' ){  
+        _s3.style.display = '';  
+    }  
+    else{  
+        _s3.style.display = 'none';  
+    }  
+} 
+</script>  
+{% endblock %}

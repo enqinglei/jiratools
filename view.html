@@ -1,0 +1,220 @@
+{% extends "layout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>Edit RCA or Update RCA status:  <input name='button' class="btn btn-large btn-primary" value='Delete' type='SUBMIT'></h2>
+<table>
+<p>Use this form to Edit your internal task and status( No More than 1024 chars,Only English,No Chinese):</p>
+<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:30px;">{{todo.PRID}} </textarea></td></tr>
+<tr><td>PRTitle:</td><td><textarea name='PRTitle' style="width:800px;height:30px;">{{todo.PRTitle}} </textarea></td></tr>
+<!---<tr><td>PRReportedDate:</td><td><textarea name='PRReportedDate' style="width:800px;height:30px;">{{todo.PRReportedDate}} </textarea></td></tr>--->
+<tr><td>PRClosedDate:</td><td><textarea name='PRClosedDate' style="width:800px;height:30px;">{{todo.PRClosedDate}} </textarea></td></tr>
+<!--<tr><td>PRRcaCompleteDate:</td><td><input type="date" name='PRRcaCompleteDate' value='{{todo.PRRcaCompleteDate}}' style="width:800px;height:30px;"> </td></tr>-->
+<tr><td>PRRcaCompleteDate:</td><td>
+<div class="input-append date" id="PRRcaCompleteDate" data-date="" data-date-format="yyyy-mm-dd">
+    <input class="span2" size="100" name='PRRcaCompleteDate' type="text" value='{{todo.PRRcaCompleteDate}}'  >
+    <span class="add-on"><i class="icon-remove"></i></span>
+    <span class="add-on"><i class="icon-th"></i></span>
+</div>  
+</td></tr> 
+<tr><td>IsLongCycleTime:</td><td><input type="text" name="IsLongCycleTime" id="t" value ='{{todo.IsLongCycleTime}}' onFocus="showSelect();" style=" width:800px; height:30px">     
+<select name="sel" id="sel" style="display:none; width:815px;height:40px" onchange="document.getElementById('t').value=this.value">  
+<option value='{{todo.IsLongCycleTime}}'>{{todo.IsLongCycleTime}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>  
+</select>  </td></tr>
+<tr><td>IsCatM:</td><td><input type="text" name="IsCatM" id="t1" value ='{{todo.IsCatM}}' onFocus="showSelect1();" style=" width:800px; height:30px">     
+<select name="sel1" id="sel1" style="display:none; width:815px;height:40px" onchange="document.getElementById('t1').value=this.value" >  
+<option value='{{todo.IsCatM}}'>{{todo.IsCatM}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>   
+</select>  </td></tr>
+<tr><td>IsRcaCompleted:</td><td><input type="text" name="IsRcaCompleted" id="t2" value ='{{todo.IsRcaCompleted}}' onFocus="showSelect2();" style=" width:800px; height:30px">     
+<select name="sel2" id="sel2" style="display:none; width:815px;height:40px" onchange="document.getElementById('t2').value=this.value">  
+<option value='{{todo.IsRcaCompleted}}'>{{todo.IsRCACompleted}}</option> 
+<option value="Yes">Yes</option> 
+<option value="No">No</option>  
+</select>  </td></tr>
+<tr><td>NoNeedDoRCAReason:</td><td><textarea name='NoNeedDoRCAReason' style="width:800px;height:30px;">{{todo.NoNeedDoRCAReason}} </textarea></td></tr>
+<!--<tr><td>RootCauseCategory:</td><td><textarea name='RootCauseCategory' style="width:800px;height:40px;" >{{todo.RootCauseCategory}} </textarea> </td></tr> -->
+<tr><td>RootCauseCategory:</td><td><input type="text" name="RootCauseCategory" id="t4" value ='{{todo.RootCauseCategory}}' onFocus="showSelect4();" style=" width:800px; height:30px">     
+<select name="sel4" id="sel4" style="display:none; width:815px;height:40px" onchange="document.getElementById('t4').value=this.value">  
+<option value='{{todo.RootCauseCategory}}'>{{todo.RootCauseCategory}}</option> 
+<option value="Function Implementation Error">Function Implementation Error</option> 
+<option value="Coding Error">Coding Error</option>   
+<option value="EFS Misunderstanding<">EFS Misunderstanding</option>  
+<option value="EFS Missing">EFS Missing</option>  
+<option value="EFS Error">EFS Error</option>  
+<option value="Change Alignment Missing">Change Alignment Missing</option>
+<option value="Interface Misunderstanding">Interface Misunderstanding</option>
+<option value="Correction Inheritance Missing">Correction Inheritance Missing</option> 
+<option value="Feature Missing">Feature Missing</option> 
+<option value="Change Request Issue">Change Request Issue</option>
+<option value="Third Party SW bug">Third Party SW bug</option>
+
+</select>  </td></tr>
+<!--<tr><td>FunctionArea:</td><td><textarea name='FunctionArea' style="width:800px;height:30px;">{{todo.FunctionArea}} </textarea></td></tr> -->
+<tr><td>FunctionArea:</td><td><input type="text" name="FunctionArea" id="t5" value ='{{todo.FunctionArea}}' onFocus="showSelect5();" style=" width:800px; height:30px">     
+<select name="sel5" id="sel5" style="display:none; width:815px;height:40px" onchange="document.getElementById('t5').value=this.value">  
+<option value='{{todo.FunctionArea}}'>{{todo.FunctionArea}}</option> 
+<option value="DL TD Scheduling">DL TD Scheduling</option> 
+<option value="UL TD Scheduling">UL TD Scheduling</option>  
+<option value="DL FD Scheduling">DL FD Scheduling</option>  
+<option value="UL FD Scheduling<">UL FD Scheduling</option>  
+<option value="DL HARQ">DL HARQ</option>  
+<option value="UL HARQ">UL HARQ</option>  
+<option value="DL LA">DL LA</option>
+<option value="UL LA">UL LA</option> 
+<option value="RACH">RACH</option>
+<option value="SysInfo Scheduling">SysInfo Scheduling</option>    
+<option value="DL CA">DL CA</option>
+<option value="UL CA">UL CA</option>
+<option value="CnP">CnP</option>
+<option value="RLF">RLF</option>
+<option value="PM Counter">PM Counter</option>
+<option value="TTITrace">TTITrace</option>
+<option value="Third Party SW">Third Party SW</option>
+
+</select>  </td></tr>
+<tr><td>CodeDeficiencyDescription:</td><td><textarea name='CodeDeficiencyDescription' style="width:800px;height:40px;" >{{todo.CodeDeficiencyDescription}} </textarea> </td></tr>
+<tr><td>CorrectionDescription:</td><td><textarea name='CorrectionDescription' style="width:800px;height:40px;" >{{todo.CorrectionDescription}} </textarea> </td></tr>
+<tr><td>RootCause:</td><td><textarea name='RootCause' style="width:800px;height:40px;" >{{todo.RootCause}} </textarea> </td></tr>
+<tr><td>FixedBy:</td><td><textarea name='IntroducedBy' style="width:800px;height:30px;">{{todo.IntroducedBy}} </textarea></td></tr>
+<tr><td>Handler:</td><td><input type="text" name="Handler" id="t3" value ='{{todo.Handler}}' onFocus="showSelect3();" style=" width:800px; height:30px">     
+<select name="sel3" id="sel3" style="display:none; width:815px;height:40px" onchange="document.getElementById('t3').value=this.value">  
+<option value='{{todo.Handler}}'>{{todo.Handler}}</option> 
+<option value="chenlong">chenlong</option> 
+<option value="yangjinyong">yangjinyong</option>  
+<option value="lanshenghai">lanshenghai</option>  
+<option value="lizhongyuan">lizhongyuan</option>  
+<option value="liumingjing">liumingjing</option>  
+<option value="xiezhen">xiezhen</option>  
+<option value="zhangyijie">zhangyijie</option>
+<option value="leienqing">leienqing</option>
+<option value="hujun">hujun</option> 
+</select>  </td></tr>
+</table>
+
+<div class="control-group" style="margin-left:-6px">
+	<div class="controls">
+<!--	  <button type="submit" name="update" class="btn btn-success">Update</button>-->
+	  <input name='button' class="btn btn-success" value='Update' type='SUBMIT'> <input name='button' class="btn btn-success" value='Delete' type='SUBMIT'>
+	  <a href="{{url_for('importapfromexcel')}}" class="btn btn-success">Import from 5-Why Excel</a>
+	  <a href="{{url_for('update2JIRA')}}" class="btn btn-success">Update To JIRA</a>
+	  <a href="{{ url_for('index') }}">Back to list</a>
+	</div>
+</div>
+</form>
+<script type="text/javascript">  
+
+$('#PRRcaCompleteDate').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,    
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+		minuteStep:6,  
+	 initialDate: new Date(),  
+});
+
+function showSelect(){  
+   var _t = document.getElementById('t');  
+   var _s = document.getElementById('sel');  
+   if( _t.style.display == ''){  
+       _t.style.display = 'none';  
+   }  
+   else{  
+       _t.style.display = '';  
+    }  
+   if ( _s.style.display == 'none' ){  
+        _s.style.display = '';  
+    }  
+    else{  
+        _s.style.display = 'none';  
+    }  
+}  
+function showSelect1(){  
+   var _t1 = document.getElementById('t1');  
+   var _s1 = document.getElementById('sel1');  
+   if( _t1.style.display == ''){  
+       _t1.style.display = 'none';  
+   }  
+   else{  
+       _t1.style.display = '';  
+    }  
+   if ( _s1.style.display == 'none' ){  
+        _s1.style.display = '';  
+    }  
+    else{  
+        _s1.style.display = 'none';  
+    }  
+} 
+function showSelect2(){  
+   var _t2 = document.getElementById('t2');  
+   var _s2 = document.getElementById('sel2');  
+   if( _t2.style.display == ''){  
+       _t2.style.display = 'none';  
+   }  
+   else{  
+       _t2.style.display = '';  
+    }  
+   if ( _s2.style.display == 'none' ){  
+        _s2.style.display = '';  
+    }  
+    else{  
+        _s2.style.display = 'none';  
+    }  
+} 
+function showSelect3(){  
+   var _t3 = document.getElementById('t3');  
+   var _s3 = document.getElementById('sel3');  
+   if( _t3.style.display == ''){  
+       _t3.style.display = 'none';  
+   }  
+   else{  
+       _t3.style.display = '';  
+    }  
+   if ( _s3.style.display == 'none' ){  
+        _s3.style.display = '';  
+    }  
+    else{  
+        _s3.style.display = 'none';  
+    }  
+} 
+
+function showSelect4(){  
+   var _t4 = document.getElementById('t4');  
+   var _s4 = document.getElementById('sel4');  
+   if( _t4.style.display == ''){  
+       _t4.style.display = 'none';  
+   }  
+   else{  
+       _t4.style.display = '';  
+    }  
+   if ( _s4.style.display == 'none' ){  
+        _s4.style.display = '';  
+    }  
+    else{  
+        _s4.style.display = 'none';  
+    }  
+}
+function showSelect5(){  
+   var _t5 = document.getElementById('t5');  
+   var _s5 = document.getElementById('sel5');  
+   if( _t5.style.display == ''){  
+       _t5.style.display = 'none';  
+   }  
+   else{  
+       _t5.style.display = '';  
+    }  
+   if ( _s5.style.display == 'none' ){  
+        _s5.style.display = '';  
+    }  
+    else{  
+        _s5.style.display = 'none';  
+    }  
+}
+
+</script>  
+{% endblock %}

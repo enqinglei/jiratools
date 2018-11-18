@@ -1,0 +1,2560 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<div class="row">
+   <div class="col-md-6" style="float:left;">
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team Customer RCA Status<b></p>
+</h2>
+		<div id="customer_rca" style="width:600px;height:400px;"></div>
+	</div>
+
+	<div class="col-md-6" style="float:right;">
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team Customer AP Status<b></p>
+</h2>
+<div id="customer_ap" style="width:600px;height:400px;"></div>
+	</div>
+</div>
+<h2>
+
+<hr>
+	<p> <b style="color:red;"> </b> <b style="color:blue;"> Tribe Customer RCA Status<b></p>
+</h2>
+<div id="tribe_customer_rca" style="width:900px;height:600px;"></div>
+<hr>
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;"> </b> <b style="color:blue;"> Tribe Customer AP Status<b></p>
+	<br>
+</h2>
+<div id="tribe_customer_ap" style="width:900px;height:600px;"></div>
+
+<div class="row">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+   <div class="col-md-6" style="float:left;">
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Rating for Customer RCA Delivery<b></p>
+</h2>
+		<div id="main2jira" style="width:600px;height:400px;"></div>
+	</div>
+
+	<div class="col-md-6" style="float:right;">
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Rating for Customer RCA Quality <b></p>
+</h2>
+<div id="main4jira" style="width:600px;height:400px;"></div>
+	</div>
+</div>
+
+<!---Jira--->
+<div class="row">
+   <div class="col-md-6" style="float:left;">
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team Internal RCA Status<b></p>
+</h2>
+		<div id="main2" style="width:600px;height:400px;"></div>
+	</div>
+
+	<div class="col-md-6" style="float:right;">
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Team Internal AP Status<b></p>
+</h2>
+<div id="main4" style="width:600px;height:400px;"></div>
+	</div>
+</div>
+<h2>
+
+<hr>
+	<p> <b style="color:red;"></b> <b style="color:blue;"> Tribe Internal RCA Status Charts <b></p>
+</h2>
+<div id="main1" style="width:900px;height:600px;"></div>
+<hr>
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;"></b> <b style="color:blue;"> Tribe Internal AP Status Charts <b></p>
+	<br>
+
+</h2>
+<div id="main3" style="width:900px;height:600px;"></div>
+<hr>
+<div class="row">
+   <div class="col-md-6" style="float:left;">
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">Tribe FDD Overall RCA Status<b></p>
+</h2>
+		<div id="totaltriberca" style="width:600px;height:400px;"></div>
+	</div>
+
+	<div class="col-md-6" style="float:right;">
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Tribe FDD Overall AP Status<b></p>
+</h2>
+<div id="totaltribeap" style="width:600px;height:400px;"></div>
+	</div>
+</div>
+
+<hr>
+
+
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">RootCause Category Distribution<b></p>
+</h2>
+		<div id="rootcausedistribution" style="width:900px;height:600px;"></div>
+
+
+
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;"> Function Area Distribution <b></p>
+</h2>
+<div id="functionareadistribution" style="width:900px;height:600px;"></div>
+
+
+<hr>
+
+<h2>
+    <meta charset="utf-8">
+
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">Cat-M RootCause Category Distribution<b></p>
+</h2>
+		<div id="rootcausedistributioncatm" style="width:900px;height:600px;"></div>
+
+
+
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">Cat-M Function Area Distribution <b></p>
+</h2>
+<div id="functionareadistributioncatm" style="width:900px;height:600px;"></div>
+
+
+<hr>
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">Average OnTimeDelivery Rating<b></p>
+</h2>
+		<div id="averageontimerating" style="width:900px;height:600px;"></div>
+<h2>
+    <meta charset="utf-8">
+    <p> <b style="color:red;">{{titlemessage}}</b> <b style="color:blue;">Average Prepared Quality Rating<b></p>
+</h2>
+<div id="averagequalityrating" style="width:900px;height:600px;"></div>
+<hr>
+
+<a class="cur STRING_BASE" href="http://n-5cg5010gn7.nsn-intra.net:3344/dashboard"><strong>Detail Information</strong></a> 
+ 
+
+<script type="text/javascript">
+var myChart2jira = echarts.init(document.getElementById('main2jira'));	
+var    option2jira = {
+            title : {
+                text: 'Customer Pronto RCA Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['OnTimeDeliveryRating'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+			xAxis : [
+
+					{
+
+						type : 'category',
+
+					   // boundaryGap : false,
+
+						data : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+
+						axisLabel:{
+
+						  //rotate:10, 
+
+						  textStyle:{
+
+							 color:"blue",
+
+							 //fontSize:16
+
+						}
+
+					  }
+
+					}
+
+			   ],
+
+            series : [
+
+                {
+                    name:'OnTimeDeliveryRating',
+                    type:'bar',
+					barGap:'10%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }
+				/*,
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }*/
+            ]
+        };
+myChart2jira.setOption(option2jira);
+$.get('/teamjirarcaontimedeliverystatus').done(function (data) {
+        myChart2jira.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart2jira.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext: 'Customer Pronto RCA Status',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 //fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RcaOnTimeDeliveryRating'],
+				//x : 'right',
+				y: 'bottom',// 'bottom','top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.prid,//['Hanbing','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+					axisLabel:{
+
+						  rotate:12, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+							 //fontSize:12
+
+						}
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				x: 40,
+				x2: 0,
+				y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			},*/                 
+            series : [
+                {
+                    name:'RcaOnTimeDeliveryRating',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.ontimerating  //[320, 302,191, 234, 290, 330, 310,120]
+                }/*,
+                {
+                    name:'RcaDeliveryQualityRating',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.qualityrating //[120, 132, 101, 134, 90, 230, 210,120]
+                },
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apundone //[120, 132, 101, 134, 90, 230, 210,120]
+                }*/
+            ]
+		}
+		);
+    });
+
+var myChart4jira = echarts.init(document.getElementById('main4jira'));	
+var    option4jira = {
+            title : {
+                text: 'Customer Pronto RCA Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RcaDeliveryQualityRating'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+			xAxis : [
+
+					{
+
+						type : 'category',
+
+					   // boundaryGap : false,
+
+						data : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+
+						axisLabel:{
+
+						  //rotate:10, 
+
+						  textStyle:{
+
+							 color:"blue",
+
+							 //fontSize:16
+
+						}
+
+					  }
+
+					}
+
+			   ],
+
+            series : [
+
+                {
+                    name:'RcaDeliveryQualityRating',
+                    type:'bar',
+					barGap:'10%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }/*,
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }*/
+            ]
+        };
+
+myChart4jira.setOption(option4jira);
+$.get('/teamjirarcaqualitystatus').done(function (data) {
+        myChart4jira.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart4jira.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext: 'Customer Pronto RCA Status',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 //fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RcaDeliveryQualityRating'],
+				//x : 'right',
+				y: 'bottom',// 'bottom','top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.prid,//['Hanbing','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+					axisLabel:{
+
+						  rotate:12, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+							 //fontSize:12
+
+						}
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				x: 40,
+				x2: 0,
+				y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			},*/                 
+            series : [/*
+                {
+                    name:'OnTimeDeliveryRating',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.ontimerating  //[320, 302,191, 234, 290, 330, 310,120]
+                },*/
+                {
+                    name:'RcaDeliveryQualityRating',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.qualityrating //[120, 132, 101, 134, 90, 230, 210,120]
+                }/*,
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apundone //[120, 132, 101, 134, 90, 230, 210,120]
+                }*/
+            ]
+		}
+		);
+    });
+
+var myChart_customer_rca = echarts.init(document.getElementById('customer_rca'));	
+var   option_customer_rca = {
+            title : {
+                text: 'Customer RCA Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:['RCA Done','RCA Undone']
+				//data:['RCA Undone','RCA Done']
+            },
+			
+            series : [
+                {
+                    name:'Customer RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_customer_rca.setOption(option_customer_rca);
+
+$.get('/teamjirarcastatus').done(function (data) {
+        myChart_customer_rca.hideLoading(); // 隐藏加载动画
+        myChart_customer_rca.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext:'Team Customer RCA Status' ,
+                x:'center'
+            },
+            series : [
+                {
+                    name:'Customer RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.rcaundone, name:'RCA Undone'},
+                        {value: data.rcadone, name:'RCA Done'}
+                        
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+
+var myChart_customer_ap = echarts.init(document.getElementById('customer_ap'));	
+var    option_customer_ap = {
+            title : {
+                text: 'Customer AP Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Arrival','AP Done', 'AP Undone'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+			xAxis : [
+
+					{
+
+						type : 'category',
+
+					   // boundaryGap : false,
+
+						data : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+
+						axisLabel:{
+
+						  //rotate:10, 
+
+						  textStyle:{
+
+							 color:"blue",
+
+							 //fontSize:16
+
+						}
+
+					  }
+
+					}
+
+			   ],
+
+            series : [
+
+                {
+                    name:'Customer AP Arrival',
+                    type:'bar',
+					barGap:'10%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                },
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }
+            ]
+        };
+
+myChart_customer_ap.setOption(option_customer_ap);
+
+$.get('/jirateamapstatus').done(function (data) {
+        myChart_customer_ap.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_customer_ap.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext: 'Team Customer AP Status',
+                x:'center' 
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Arrival','AP Done', 'AP Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.month,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+					axisLabel:{
+
+						  rotate:0, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+						}
+
+					}
+				}
+            ],
+	                
+            series : [
+                {
+                    name:'AP Arrival',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.aparrival  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apdone //[120, 132, 101, 134, 90, 230, 210,120]
+                },
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apundone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });
+
+
+var myChart_tribe_customer_ap = echarts.init(document.getElementById('tribe_customer_ap'));	
+var    option_tribe_customer_ap = {
+            title : {
+                text: 'Tribe Customer AP Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Done', 'AP Undone'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai'],
+					            axisLabel:{
+
+              rotate:10, //刻度旋转45度角
+
+              textStyle:{
+
+                 color:"blue",
+            }
+
+          }
+                }
+				
+            ],
+
+            series : [
+                {
+                    name:'AP Undone',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+        };
+
+myChart_tribe_customer_ap.setOption(option_tribe_customer_ap);
+
+$.get('/tribejiraapstatus').done(function (data) {
+        myChart_tribe_customer_ap.hideLoading(); // 隐藏加载动画
+
+        myChart_tribe_customer_ap.setOption(
+		{
+            title : {
+                text: 'Tribe Customer APs Status',
+                subtext: 'All Team Included',
+                x:'center' 
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Done', 'AP Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                            axisLabel:{
+
+              rotate:15, //刻度旋转45度角
+			  interval:0,
+              textStyle:{
+		 
+                 color:"blue",
+
+            }
+					}
+				}
+            ],              
+            series : [
+                {
+                    name:'AP Undone',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.rcaundone  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.rcadone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });
+
+
+var myChart_tribe_customer_rca = echarts.init(document.getElementById('tribe_customer_rca'));	
+var    option_tribe_customer_rca = {
+            title : {
+                text: 'Tribe Customer RCA Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RCA Done', 'RCA Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai'],
+					axisLabel:{
+
+						  rotate:0, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+							 //fontSize:12
+
+						}
+
+					}
+
+                }
+            ],
+
+            series : [
+                {
+                    name:'RCA Undone',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'RCA Done',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+        };
+
+myChart_tribe_customer_rca.setOption(option_tribe_customer_rca);
+
+$.get('/tribercastatus').done(function (data) {
+        myChart_tribe_customer_rca.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_tribe_customer_rca.setOption(
+		{
+            title : {
+                text: 'Overall RCA Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RCA Done', 'RCA Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team //['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                }
+            ],
+            series : [
+                {
+                    name:'RCA Undone',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.rcaundone  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'RCA Done',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.rcadone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });	
+	
+	
+//End JIRA
+var myChart2 = echarts.init(document.getElementById('main2'));	
+var   option2 = {
+            title : {
+                text: 'RCA Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+			/*
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+			*/
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:['RCA Done','RCA Undone']
+				//data:['RCA Undone','RCA Done']
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+			*/
+            /*calculable : true,*/
+            series : [
+                {
+                    name:'RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart2.setOption(option2);
+
+// myChart2.showLoading(); // 显示加载动画
+    
+    // 异步加载数据
+    $.get('/weather').done(function (data) {
+        myChart2.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart2.setOption(
+			/*{
+		    
+            xAxis: {
+                data: data.month
+            },
+            series: [{
+                name: '蒸发量', // 根据名字对应到相应的系列
+                data: data.evaporation.map(parseFloat) // 转化为数字（注意map）
+            },
+			{
+                name: '降水量',
+                data: data.precipitation.map(parseFloat)
+            }
+			]
+			
+        }*/
+		{
+            title : {
+                text: data.user,
+                subtext:'Team Level RCA Status' ,
+                x:'center'
+            },
+			/*
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+			
+            legend: {
+                orient : 'vertical', //'horizontal'    
+				//left: 'left',
+                x : 'right',//'right',  // 'center' | 'left' | {number},
+    
+				y: 'top', // 'center' | 'bottom' | {number}    
+
+                data:['RCA Done','RCA Undone']
+				//data:['RCA Undone','RCA Done']
+            },
+		
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {
+                        show: true,
+                        type: ['pie', 'funnel'],
+                        option: {
+                            funnel: {
+                                x: '25%',
+                                width: '50%',
+                                funnelAlign: 'left',
+                                max: 1548
+                            }
+                        }
+                    },
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },
+			*/
+            /*calculable : true,*/
+            series : [
+                {
+                    name:'RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.rcaundone, name:'RCA Undone'},
+                        {value: data.rcadone, name:'RCA Done'}
+                        
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+
+var myChart4 = echarts.init(document.getElementById('main4'));	
+var    option4 = {
+            title : {
+                text: 'AP Status',
+                subtext: 'Team Level',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Arrival','AP Done', 'AP Undone'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+			xAxis : [
+
+					{
+
+						type : 'category',
+
+					   // boundaryGap : false,
+
+						data : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+
+						axisLabel:{
+
+						  //rotate:10, 
+
+						  textStyle:{
+
+							 color:"blue",
+
+							 //fontSize:16
+
+						}
+
+					  }
+
+					}
+
+			   ],
+
+            series : [
+
+                {
+                    name:'AP Arrival',
+                    type:'bar',
+					barGap:'10%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                },
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310, 101, 134, 90, 230, 210]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210, 101, 134, 90, 230, 210]
+                }
+            ]
+        };
+
+myChart4.setOption(option4);
+
+$.get('/teamapstatus').done(function (data) {
+        myChart4.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart4.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext: 'Team Level AP Status',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 //fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Arrival','AP Done', 'AP Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.month,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+					axisLabel:{
+
+						  rotate:0, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+							 //fontSize:12
+
+						}
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				x: 40,
+				x2: 0,
+				y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			},*/                 
+            series : [
+                {
+                    name:'AP Arrival',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.aparrival  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apdone //[120, 132, 101, 134, 90, 230, 210,120]
+                },
+				{
+                    name:'AP Undone',
+                    type:'bar',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.apundone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });
+
+
+var myChart3 = echarts.init(document.getElementById('main3'));	
+var    option3 = {
+            title : {
+                text: 'Overall AP Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Done', 'AP Undone'],
+
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai'],
+					            axisLabel:{
+
+              rotate:10, //刻度旋转45度角
+
+              textStyle:{
+
+                 color:"blue",
+
+                 //fontSize:14
+
+            }
+
+          }
+                }
+				
+            ],
+
+            series : [
+                {
+                    name:'AP Undone',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+        };
+
+myChart3.setOption(option3);
+
+$.get('/apstatus').done(function (data) {
+        myChart3.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart3.setOption(
+		{
+            title : {
+                text: 'Overall APs Status',
+                subtext: 'All Team Included',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['AP Done', 'AP Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                            axisLabel:{
+
+              rotate:15, //刻度旋转45度角
+			  interval:0,
+              textStyle:{
+		 
+                 color:"blue",
+
+                 //fontSize:12
+
+            }
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				 x: 40,
+				 x2: 0,
+				 y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			}, */                
+            series : [
+                {
+                    name:'AP Undone',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.rcaundone  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'AP Done',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.rcadone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });
+
+
+var myChart1 = echarts.init(document.getElementById('main1'));	
+var    option1 = {
+            title : {
+                text: 'Overall RCA Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RCA Done', 'RCA Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data : ['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai'],
+					axisLabel:{
+
+						  rotate:0, //刻度旋转45度角
+						  interval:0,
+						  textStyle:{
+					 
+							 color:"blue",
+
+							 //fontSize:12
+
+						}
+
+					}
+
+                }
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				 x: 40,
+				 x2: 0,
+				 y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			},*/
+            series : [
+                {
+                    name:'RCA Undone',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'RCA Done',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:[] //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+        };
+
+myChart1.setOption(option1);
+
+$.get('/rcastatus').done(function (data) {
+        myChart1.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart1.setOption(
+		{
+            title : {
+                text: 'Overall RCA Status',
+                subtext: 'All Team Included',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['RCA Done', 'RCA Undone'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team //['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                }
+            ],
+            series : [
+                {
+                    name:'RCA Undone',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.rcaundone  //[320, 302,191, 234, 290, 330, 310,120]
+                },
+                {
+                    name:'RCA Done',
+                    type:'bar',
+					barGap:'1%',
+                    //stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data:data.rcadone //[120, 132, 101, 134, 90, 230, 210,120]
+                }
+            ]
+		}
+		);
+    });
+
+//Total Tribe RCA and AP status PIE
+
+var myChart_totaltriberca = echarts.init(document.getElementById('totaltriberca'));	
+var   option_totaltriberca = {
+            title : {
+                text: 'Tribe RCA Status',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:['RCA Done','RCA Undone']
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_totaltriberca.setOption(option_totaltriberca);
+
+// myChart2.showLoading(); // 显示加载动画
+    
+    // 异步加载数据
+    $.get('/totoaltribercastatus').done(function (data) {
+        myChart_totaltriberca.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_totaltriberca.setOption(
+
+		{
+            title : {
+                text: data.user,
+                subtext:'Tribe Level Status' ,
+                x:'center'
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.rcaundone, name:'RCA Undone'},
+                        {value: data.rcadone, name:'RCA Done'}
+                        
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+
+// Total Tribe AP status
+
+var myChart_totaltribeap = echarts.init(document.getElementById('totaltribeap'));	
+var   option_totaltribeap = {
+            title : {
+                text: 'Tribe AP Status',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:['AP Done','AP Undone']
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe AP Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'AP Done'},
+                        {value:[0], name:'AP Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_totaltribeap.setOption(option_totaltribeap);
+
+// myChart2.showLoading(); // 显示加载动画
+    
+    // 异步加载数据
+    $.get('/totaltribeapstatus').done(function (data) {
+        myChart_totaltribeap.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_totaltribeap.setOption(
+
+		{
+            title : {
+                text: data.user,
+                subtext:'Tribe Level Status' ,
+                x:'center'
+            },
+
+            series : [
+                {
+                    name:'Tribe AP Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.rcaundone, name:'AP Undone'},
+                        {value: data.rcadone, name:'AP Done'}
+                        
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+ 
+ // RootCause  Distribution
+ 
+
+var myChart_rootcause = echarts.init(document.getElementById('rootcausedistribution'));	
+var   option_rootcause = {
+            title : {
+                text: 'Root Cause Category',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:[]
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_rootcause.setOption(option_rootcause);
+
+// myChart2.showLoading(); // 显示加载动画
+    
+    // 异步加载数据
+    $.get('/rootcausedistribution').done(function (data) {
+        myChart_rootcause.hideLoading(); // 隐藏加载动画
+        
+
+        // 填入数据
+        myChart_rootcause.setOption(
+
+		{
+            title : {
+                text: data.user,
+                subtext:'Total Level' ,
+                x:'center'
+            },
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:data.rootcause
+				//data:['RCA Undone','RCA Done']
+            },
+            series : [
+                {
+                    name:data.rootcause,
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.count[0], name:data.rootcause[0]},
+                        {value: data.count[1], name:data.rootcause[1]},
+						{value: data.count[2], name:data.rootcause[2]},
+                        {value: data.count[3], name:data.rootcause[3]},
+						{value: data.count[4], name:data.rootcause[4]},
+                        {value: data.count[5], name:data.rootcause[5]},
+						{value: data.count[6], name:data.rootcause[6]},
+                        {value: data.count[7], name:data.rootcause[7]},
+                        {value: data.count[8], name:data.rootcause[8]},
+                        {value: data.count[9], name:data.rootcause[9]},
+						{value: data.count[10], name:data.rootcause[10]}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+
+// Function Area
+var myChart_functionarea = echarts.init(document.getElementById('functionareadistribution'));	
+var   option_functionarea = {
+            title : {
+                text: 'Function Area',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:[]
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_functionarea.setOption(option_functionarea);
+
+    $.get('/functionareadistribution').done(function (data) {
+        myChart_functionarea.hideLoading(); // 隐藏加载动画
+		                var servicedata=[];
+
+                for(var i=0;i<data.count.length;i++){
+                    var obj=new Object();
+                    obj.name=data.functionarea[i]; 
+                    obj.value=data.count[i];
+                    servicedata[i]=obj;
+                }
+        myChart_functionarea.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext:'Total Level' ,
+                x:'center'
+            },
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+				y: '85%', // 'center' | 'bottom' | {number}    
+                data:data.functionarea
+            },
+            series : [
+                {
+                    name:'Function Area',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:servicedata,
+					/*[
+						{value: data.count[0], name:data.rootcause[0]},
+                        {value: data.count[1], name:data.rootcause[1]},
+						{value: data.count[2], name:data.rootcause[2]},
+                        {value: data.count[3], name:data.rootcause[3]},
+						{value: data.count[4], name:data.rootcause[4]},
+                        {value: data.count[5], name:data.rootcause[5]},
+						{value: data.count[6], name:data.rootcause[6]},
+                        {value: data.count[7], name:data.rootcause[7]},
+                        {value: data.count[8], name:data.rootcause[8]},
+                        {value: data.count[9], name:data.rootcause[9]},
+						{value: data.count[10], name:data.rootcause[10]}
+                    ],*/
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+	
+// Cat-M
+
+
+var myChart_rootcausecatm = echarts.init(document.getElementById('rootcausedistributioncatm'));	
+var   option_rootcausecatm = {
+            title : {
+                text: 'Root Cause Category',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:[]
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_rootcausecatm.setOption(option_rootcausecatm);
+
+// myChart2.showLoading(); // 显示加载动画
+    
+    // 异步加载数据
+    $.get('/rootcausedistribution').done(function (data) {
+        myChart_rootcausecatm.hideLoading(); // 隐藏加载动画
+        
+
+        // 填入数据
+        myChart_rootcausecatm.setOption(
+
+		{
+            title : {
+                text: data.user,
+                subtext:'Total Level' ,
+                x:'center'
+            },
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:data.rootcause
+				//data:['RCA Undone','RCA Done']
+            },
+            series : [
+                {
+                    name:data.rootcause,
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+						{value: data.count[0], name:data.rootcause[0]},
+                        {value: data.count[1], name:data.rootcause[1]},
+						{value: data.count[2], name:data.rootcause[2]},
+                        {value: data.count[3], name:data.rootcause[3]},
+						{value: data.count[4], name:data.rootcause[4]},
+                        {value: data.count[5], name:data.rootcause[5]},
+						{value: data.count[6], name:data.rootcause[6]},
+                        {value: data.count[7], name:data.rootcause[7]},
+                        {value: data.count[8], name:data.rootcause[8]},
+                        {value: data.count[9], name:data.rootcause[9]},
+						{value: data.count[10], name:data.rootcause[10]}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+
+// Cat-M Function Area
+var myChart_functionareacatm = echarts.init(document.getElementById('functionareadistributioncatm'));	
+var   option_functionareacatm = {
+            title : {
+                text: 'Function Area',
+                subtext: 'Total Level',
+                x:'center'
+            },
+
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+    
+				y: '85%', // 'center' | 'bottom' | {number}    
+
+                data:[]
+				//data:['RCA Undone','RCA Done']
+            },
+
+            series : [
+                {
+                    name:'Tribe RCA Status',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:[
+                        {value:[0], name:'RCA Done'},
+                        {value:[0], name:'RCA Undone'}
+                    ],
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		};
+		
+myChart_functionareacatm.setOption(option_functionareacatm);
+
+    $.get('/functionareadistributioncatm').done(function (data) {
+        myChart_functionareacatm.hideLoading(); // 隐藏加载动画
+		                var servicedata=[];
+
+                for(var i=0;i<data.count.length;i++){
+                    var obj=new Object();
+                    obj.name=data.functionarea[i]; 
+                    obj.value=data.count[i];
+                    servicedata[i]=obj;
+                }
+        myChart_functionareacatm.setOption(
+		{
+            title : {
+                text: data.user,
+                subtext:'Total Level' ,
+                x:'center'
+            },
+            legend: {
+                orient : 'horizontal',//'vertical',   
+				//left: 'left',
+                x : '38%',//'right',  // 'center' | 'left' | {number},
+				y: '85%', // 'center' | 'bottom' | {number}    
+                data:data.functionarea
+            },
+            series : [
+                {
+                    name:'Function Area',
+                    type:'pie',
+                    radius : '55%',
+                    center: ['50%', '50%'],
+                    data:servicedata,
+					/*[
+						{value: data.count[0], name:data.rootcause[0]},
+                        {value: data.count[1], name:data.rootcause[1]},
+						{value: data.count[2], name:data.rootcause[2]},
+                        {value: data.count[3], name:data.rootcause[3]},
+						{value: data.count[4], name:data.rootcause[4]},
+                        {value: data.count[5], name:data.rootcause[5]},
+						{value: data.count[6], name:data.rootcause[6]},
+                        {value: data.count[7], name:data.rootcause[7]},
+                        {value: data.count[8], name:data.rootcause[8]},
+                        {value: data.count[9], name:data.rootcause[9]},
+						{value: data.count[10], name:data.rootcause[10]}
+                    ],*/
+					itemStyle: {
+						normal:{
+						 label:{
+						 show:true,
+						 formatter: '{b} : {c} \n ({d}%)'
+						 },
+						 labelLine:{
+						 show:true
+						 }
+						 },
+						emphasis: {
+							shadowBlur: 10,
+							shadowOffsetX: 0,
+							shadowColor: 'rgba(0, 0, 0, 0.5)'
+						}
+					}
+                }		
+            ]
+		}
+		);
+    });
+	
+// Average OnTimeDelivery Rating
+var myChart_averageontime = echarts.init(document.getElementById('averageontimerating'));
+	
+$.get('/averageontimerating').done(function (data) {
+        myChart_averageontime.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_averageontime.setOption(
+		{
+            title : {
+                text: 'Average OnTimeDelivery',
+                subtext: '',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['Score Point'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                            axisLabel:{
+
+              rotate:15, //刻度旋转45度角
+			  interval:0,
+              textStyle:{
+		 
+                 color:"blue",
+
+                 //fontSize:12
+
+            }
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				 x: 40,
+				 x2: 0,
+				 y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			}, */                
+            series : [
+                {
+                    name:'Score Point',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.averageontimerating  //[320, 302,191, 234, 290, 330, 310,120]
+                }
+            ]
+		}
+		);
+    });
+
+// Average Quality Rating
+var myChart_averagequality = echarts.init(document.getElementById('averagequalityrating'));
+	
+$.get('/averagequalityrating').done(function (data) {
+        myChart_averageontime.hideLoading(); // 隐藏加载动画
+        
+        // 填入数据
+        myChart_averagequality.setOption(
+		{
+            title : {
+                text: 'Average OnTimeDelivery',
+                subtext: '',
+                x:'center' /*,
+				textStyle:{
+		 
+                 color:"red",
+
+                 fontSize:12
+				 }*/
+            },
+            tooltip : {
+                trigger: 'axis',
+                axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                    type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+                }
+            },
+            legend: {
+                data:['Score Point'],
+				//x : 'right',
+				y: 'bottom',// 'top'| 'center' | 'bottom' | {number}
+            },
+			/*
+            toolbox: {
+                show : true,
+                feature : {
+                    mark : {show: true},
+                    dataView : {show: true, readOnly: false},
+                    magicType : {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore : {show: true},
+                    saveAsImage : {show: true}
+                }
+            },*/
+            calculable : true,
+            yAxis : [
+                {
+                    type : 'value'
+                }
+            ],
+            xAxis : [
+                {
+                    type : 'category',
+                    data :data.team,//['zhangyijie','Yangjinyong','Caizhichao','Chenlong','Liumingjing','Xiezhen','Lizhongyuan','Lanshenghai']
+                            axisLabel:{
+
+              rotate:15, //刻度旋转45度角
+			  interval:0,
+              textStyle:{
+		 
+                 color:"blue",
+
+                 //fontSize:12
+
+            }
+
+					}
+				}
+            ],
+			/*
+			grid: { // 控制图的大小，调整下面这些值就可以，
+				 x: 40,
+				 x2: 0,
+				 y2: 70,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+			}, */                
+            series : [
+                {
+                    name:'Score Point',
+                    type:'bar',
+                    stack: 'total',
+                    itemStyle : { normal: {label : {show: true, position: 'insideRight'}}},
+                    data: data.averageontimerating  //[320, 302,191, 234, 290, 330, 310,120]
+                }
+            ]
+		}
+		);
+    });
+
+</script>
+
+{% endblock %}
