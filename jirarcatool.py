@@ -135,6 +135,7 @@ class User(db.Model):
         try:
             a = conn.simple_bind_s(dn,password)
             gSSOPWD = password # For privacy policy, cannot save this for other purpose.
+            print 'Cookie auto login or Manual login?????'
         except ldap.INVALID_CREDENTIALS:
             print "Your username or password is incorrect."
             sys.exit()
@@ -187,13 +188,15 @@ class Todo(db.Model):
     PRProduct = db.Column(db.String(64))
     ReportedBy = db.Column(db.String(64))
     FaultCoordinator = db.Column(db.String(64))
+    JiraIssueSummary = db.Column(db.String(512))
+    CustomerName = db.Column(db.String(128))
     user_id = db.Column(db.Integer, db.ForeignKey('jirausers.user_id'))
 
-    def __init__(self, JiraIssueId,JiraIssuePriority,JiraIssueSourceList,JiraIssueBusinessUnit,IsLongCycleTime, \
+    def __init__(self, JiraIssueId,JiraIssuePriority,JiraIssueSourceList,JiraIssueBusinessUnit,\
                  JiraIssueBusinessLine,JiraIssueProductLine,JiraIssueCustomerName,JiraIssueFeature,JiraIssueFeatureComponent,\
                  JiraIssueOther,JiraIssueType,JiraIssueCaseType,JiraIssueStatus,JiraIssueLabels,JiraIssueAssignee,\
                  JiraIssueReporter,PRID,PRTitle,PRRelease,PRSeverity,PRGroupInCharge,PRAttached,PRRcaEdaAssessor,\
-                 PRProduct,ReportedBy,FaultCoordinator):
+                 PRProduct,ReportedBy,FaultCoordinator,JiraIssueSummary,CustomerName):
         self.JiraIssueId = JiraIssueId
         self.JiraIssuePriority = JiraIssuePriority
         self.JiraIssueSourceList = JiraIssueSourceList
@@ -220,6 +223,8 @@ class Todo(db.Model):
         self.PRProduct = PRProduct
         self.ReportedBy = ReportedBy
         self.FaultCoordinator = FaultCoordinator
+        self.JiraIssueSummary = JiraIssueSummary
+        self.CustomerName = CustomerName
 
 """
     conn=mysql.connector.connect(host='localhost',user='root',passwd='',port=3306)
@@ -420,7 +425,7 @@ def new():
             JiraIssueOther = request.form['Other'].strip()  # Parent task has, Child task does not have
             JiraIssueType = '5WhyRCA'
             JiraIssueCaseType = ''
-            JiraIssueLabels = request.form['Labels'].strip()
+            JiraIssueLabels = request.form['Labels'].strip().split()
 
             JiraIssueAssignee = request.form['AssignTo'].strip()
             filter = '(uid=%s)' % g.user.username
@@ -445,6 +450,7 @@ def new():
             PRProduct = request.form['product'].strip()
             ReportedBy = a['reportedBy']
             FaultCoordinator = a['devFaultCoord']
+            CustomerName = a['customerName']
             prontolink = "https://pronto.inside.nsn.com/pronto/problemReportSearch.html?freeTextdropDownID=prId&searchTopText={0}".format(PRID)
             # dict2 = {'customfield_37015': prontolink}
             # issue.update(dict2)
@@ -453,6 +459,12 @@ def new():
             # # issue.fields.customfield_37064 = analysislink # Invalid, verified.
             # issue.update(dict1)
             # ProntoAttached = ''
+            link = upload_sharepoint(PRID)
+            prontolink="https://pronto.inside.nsn.com/pronto/problemReportSearch.html?freeTextdropDownID=prId&searchTopText={0}".format(PRID)
+            # dict2 = {'customfield_37015': prontolink}
+            # issue.update(dict2)
+            analysislink = str(link)
+            # dict1 = {'customfield_37064': analysislink}
             Prontonumber = PRID + ',' + PRAttached
             summaryinfo = PRTitle #'5WhyRca Parent Task for ' + PRID
             issueaddforRCAsubtask = {
@@ -467,13 +479,13 @@ def new():
                 'customfield_37063': JiraIssueFeatureComponent,  # 'Feature Component'
                 'customfield_37015': prontolink,
                 'priority': {'id': JiraIssuePriority},
-                'labels': ['AAA', 'BBB'],
+                'labels': JiraIssueLabels, #['AAA', 'BBB'],
                 'customfield_37059': PRRelease,  # 'Release Fault Introduced', #softwareRelease
                 'customfield_32006': [{'id':JiraIssueCustomerName}],  # {'Customer':}, # less[
                 'customfield_38068': JiraIssueOther,  # {Other} #More filled CMCC
 
                 'customfield_37064': analysislink,
-                'assignee': {'name':''} #Optional
+                'assignee': {'name':JiraIssueAssignee } #Optional
             }
             jira = getjira()
             issues = jira.search_issues(jql_str='project = MNPRCA AND summary~' + PRID + ' AND type = "5WhyRCA" ',maxResults=5)
@@ -493,7 +505,8 @@ def new():
             JiraIssueBusinessLine = BusinessLineDict[JiraIssueBusinessLine]  # Parent task has, Child task does not have
             JiraIssueProductLine = ProductLineDict[JiraIssueProductLine]  # Parent task has, Child task does not have
             JiraIssueCustomerName = CustomerNameDict[JiraIssueCustomerName]  # Parent task has, Child task does not have
-
+            JiraIssueSummary = str(newissue.fields.summary)
+            CustomerName = CustomerName
             todo_item = Todo.query.get(JiraIssueId)
             if todo_item:  #
                 todo_item.JiraIssueFeature = JiraIssueFeature
@@ -532,7 +545,7 @@ def new():
                  JiraIssueBusinessLine,JiraIssueProductLine,JiraIssueCustomerName,JiraIssueFeature,JiraIssueFeatureComponent,\
                  JiraIssueOther,JiraIssueType,JiraIssueCaseType,JiraIssueStatus,JiraIssueLabels,JiraIssueAssignee,\
                  JiraIssueReporter,PRID,PRTitle,PRRelease,PRSeverity,PRGroupInCharge,PRAttached,PRRcaEdaAssessor,\
-                 PRProduct,ReportedBy,FaultCoordinator)
+                 PRProduct,ReportedBy,FaultCoordinator,JiraIssueSummary,CustomerName)
                 todo.user = g.user
                 db.session.add(todo)
                 db.session.commit()
@@ -557,77 +570,260 @@ def index_by_assignee():
             JiraIssueId = str(issue.key)
             todo_item = Todo.query.get(JiraIssueId)
             if todo_item:  # PR in the rca table,just do the assignment and update assignee.
-                continue
+                # PRID = todo_item.PRID.strip()
+                # if PRID in ('5WhyRca Parent Task for CAS-154355-C888-Test','PR1234'):
+                #     continue
+                # url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+                # try:
+                #     r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                # except:
+                #     flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                #     print PRID
+                # a = r.json()
+                todo_item.JiraIssueStatus = str(issue.fields.status)
+                # todo_item.JiraIssueSummary = issue.fields.summary
+                # todo_item.CustomerName = a['customerName']
+                db.session.commit()
             else:
                 JiraIssueType = str(issue.fields.issuetype)
-                if issuetype == '5WhyRCA':
+                if JiraIssueType == '5WhyRCA': #Parent Task
                     JiraIssuePriority = str(issue.fields.priority)
-                    PRAttached = issue.fields.customfield_37060 #PR number
+                    #PRAttached = issue.fields.customfield_37060 #PR number
                     JiraIssueSourceList = issue.fields.customfield_37069  # Parent task has, Child task does not have
-                    JiraIssueLabels =  str(issue.fields.lablels)
+                    # JiraIssueLabels =  str(issue.fields.lablels)
                     JiraIssueBusinessUnit = str(issue.fields.customfield_37460)
                     JiraIssueBusinessLine = str(issue.fields.customfield_37061)
                     JiraIssueProductLine = str(issue.fields.customfield_37062) # Parent task has, Child task does not have
                     JiraIssueCustomerName = str(issue.fields.customfield_32006)  # Parent task has, Child task does not have
+                    #JiraIssueFeature = issue.fields.customfield_32006
                     JiraIssueFeatureComponent = str(issue.fields.customfield_37063)
                     JiraIssueOther = str(issue.fields.customfield_38068) # Parent task has, Child task does not have
                     JiraIssueCaseType = ''
                     PRTitle = issue.fields.summary  # task title
-                    PRID = PRTitle.split(':')[0]
-                    url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
-                    try:
-                        r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
-                    except:
-                        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-                    a = r.json()
-                    PRSeverity = a['severity']
-                    PRGroupInCharge = a['groupIncharge']
-                    PRProduct = a['product']
-                    ReportedBy = a['reportedBy']
-                    FaultCoordinator = a['devFaultCoord']
-                else:
-                    PRTitle = issue.fields.summary # subtask title
-                    PRID = ''
-                    PRAttached = ''
+
+                    # childissues = issue.fields.subtasks
+                    # parentissue = issue.fields.parent
+
+                elif JiraIssueType in ('Analysis subtask','Action for RCA','Action for EDA'):
+                    parentissue = issue.fields.parent # Get Parent Task
+                    PRTitle = parentissue.fields.summary # subtask title
+                    JiraIssuePriority = ''
                     JiraIssueSourceList = '' # Parent task has, Child task does not have
-                    JiraIssueLabels = str(issue.fields.lablels)
                     JiraIssueBusinessUnit = ''
                     JiraIssueBusinessLine = ''
                     JiraIssueProductLine = '' # Parent task has, Child task does not have
                     JiraIssueCustomerName = ''  # Parent task has, Child task does not have
                     JiraIssueFeatureComponent = ''
                     JiraIssueOther = '' # Parent task has, Child task does not have
+                    JiraIssueCaseType = ''
+                    if JiraIssueType in ('Analysis subtask',):
+                        JiraIssueCaseType = str(issue.fields.customfield_10464) # Subtask Only properties
 
-                    JiraIssueCaseType = str(issue.fields.customfield_10464) # Subtask Only properties
-
-
+                JiraIssueStatus = str(issue.fields.status)
+                JiraIssueAssignee = str(issue.fields.assignee)
+                JiraIssueReporter = str(issue.fields.reporter)
                 PRRcaEdaAssessor = JiraIssueAssignee
+                JiraIssueLabels = issue.fields.labels  # Common for all
+                # if not JiraIssueLabels:
+                #     JiraIssueLabels = ''
+                if not JiraIssueLabels:
+                    JiraIssueLabels = ''
+                else:
+                    LabelItems = JiraIssueLabels
+                    a = ''
+                    for s in LabelItems:
+                        a = a + s + ','
+                    JiraIssueLabels = a.strip(',')
+                PRID = PRTitle.split(':')[0]
+                print '%s'%PRID
+                if PRID in ('5WhyRca Parent Task for CAS-154355-C888-Test','PR1234'):
+                    continue
+                url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+                try:
+                    r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                except:
+                    flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                    print PRID
+                a = r.json()
 
-
-                PRSeverity = request.form['Severity'].strip()
-                PRGroupInCharge = request.form['GroupInCharge'].strip()
-                PRProduct = request.form['product'].strip()
+                PRSeverity = a['severity'].strip()
+                PRRelease = a['softwareRelease'].strip()
+                PRAttached = a['problemReportIds']
+                # if not PRAttached:
+                #     PRAttached = ''
+                if not PRAttached:
+                    PRAttached = ''
+                else:
+                    LabelItems = PRAttached
+                    b = ''
+                    for s in LabelItems:
+                        b = b + s + ','
+                        PRAttached = b.strip(',')
+                PRGroupInCharge = a['groupIncharge'].strip()
+                PRProduct = a['product'].strip()
                 ReportedBy = a['reportedBy']
                 FaultCoordinator = a['devFaultCoord']
-
-    else:
+                JiraIssueFeature = a['feature']
+                JiraIssueSummary = issue.fields.summary
+                CustomerName = a['customerName']
+                todo = Todo(JiraIssueId, JiraIssuePriority, JiraIssueSourceList, JiraIssueBusinessUnit, \
+                            JiraIssueBusinessLine, JiraIssueProductLine, JiraIssueCustomerName,
+                            JiraIssueFeature, JiraIssueFeatureComponent, \
+                            JiraIssueOther, JiraIssueType, JiraIssueCaseType, JiraIssueStatus,
+                            JiraIssueLabels, JiraIssueAssignee, \
+                            JiraIssueReporter, PRID, PRTitle, PRRelease, PRSeverity, PRGroupInCharge,
+                            PRAttached, PRRcaEdaAssessor, \
+                            PRProduct, ReportedBy, FaultCoordinator,JiraIssueSummary,CustomerName)
+                todo.user = g.user
+                db.session.add(todo)
+                db.session.commit()
+                flash('RCA item was successfully created')
         hello = User.query.filter_by(username=g.user.username).first()
         if hello:
-            normaluser = hello.email
-            with UseDatabaseDict(app.config['dbconfig']) as cursor:
-                _SQL = "select * from user_info where email = '" + normaluser + "'"
-                cursor.execute(_SQL)
-                items = cursor.fetchall()
-            if len(items) != 0:
-                JiraIssueAssignee = items[0]['displayName'].encode('utf-8')
-                count = Todo.query.filter_by(JiraIssueAssignee=JiraIssueAssignee, JiraRcaBeReqested='Yes').order_by(
-                    Todo.PRClosedDate.asc()).count()
-                todos = Todo.query.filter_by(JiraIssueAssignee=JiraIssueAssignee, JiraRcaBeReqested='Yes').order_by(
-                    Todo.PRClosedDate.asc()).all()
-                headermessage = 'All Cusomer RCA/EDA Items'
-                return render_template('customer_index.html', count=count, headermessage=headermessage,
-                                       todos=todos, user=User.query.get(g.user.id).username + '  Logged in')
+            normaluser = hello.displayName
+            JiraIssueAssignee = normaluser
+            count = Todo.query.filter_by(JiraIssueAssignee=JiraIssueAssignee).count()
+            todos = Todo.query.filter_by(JiraIssueAssignee=JiraIssueAssignee).all()
+            headermessage = 'All MNRCA JIRA RCA/EDA Items Assigned To Me'
+            return render_template('index.html', count=count, headermessage=headermessage,
+                                   todos=todos, user=User.query.get(g.user.id).displayName)
 
+@app.route('/index_by_reporter',methods=['GET','POST'])
+@login_required
+def index_by_reporter():
+    if request.method=='GET':
+        aa = g.user.username
+        bb = gSSOPWD
+        options = {'server': 'https://jiradc.int.net.nokia.com/'}
+        jira = JIRA(options, basic_auth=(aa, bb))
+        assignee = g.user.username
+        try:
+            issues = jira.search_issues('project = MNRCA and reporter = ' + assignee + '')
+        except:
+            issues =[]
+        for issue in issues:
+            JiraIssueId = str(issue.key)
+            todo_item = Todo.query.get(JiraIssueId)
+            if todo_item:  # PR in the rca table,just do the assignment and update assignee.
+                # PRID = todo_item.PRID.strip()
+                # if PRID in ('5WhyRca Parent Task for CAS-154355-C888-Test','PR1234'):
+                #     continue
+                # url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+                # try:
+                #     r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                # except:
+                #     flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                #     print PRID
+                # a = r.json()
+                todo_item.JiraIssueStatus = str(issue.fields.status)
+                # todo_item.JiraIssueSummary = issue.fields.summary
+                # todo_item.CustomerName = a['customerName']
+                db.session.commit()
+            else:
+                JiraIssueType = str(issue.fields.issuetype)
+                if JiraIssueType == '5WhyRCA': #Parent Task
+                    JiraIssuePriority = str(issue.fields.priority)
+                    #PRAttached = issue.fields.customfield_37060 #PR number
+                    JiraIssueSourceList = issue.fields.customfield_37069  # Parent task has, Child task does not have
+                    # JiraIssueLabels =  str(issue.fields.lablels)
+                    JiraIssueBusinessUnit = str(issue.fields.customfield_37460)
+                    JiraIssueBusinessLine = str(issue.fields.customfield_37061)
+                    JiraIssueProductLine = str(issue.fields.customfield_37062) # Parent task has, Child task does not have
+                    JiraIssueCustomerName = str(issue.fields.customfield_32006)  # Parent task has, Child task does not have
+                    #JiraIssueFeature = issue.fields.customfield_32006
+                    JiraIssueFeatureComponent = str(issue.fields.customfield_37063)
+                    JiraIssueOther = str(issue.fields.customfield_38068) # Parent task has, Child task does not have
+                    JiraIssueCaseType = ''
+                    PRTitle = issue.fields.summary  # task title
+
+                    # childissues = issue.fields.subtasks
+                    # parentissue = issue.fields.parent
+
+                elif JiraIssueType in ('Analysis subtask','Action for RCA','Action for EDA'):
+                    parentissue = issue.fields.parent # Get Parent Task
+                    PRTitle = parentissue.fields.summary # subtask title
+                    JiraIssuePriority = ''
+                    JiraIssueSourceList = '' # Parent task has, Child task does not have
+                    JiraIssueBusinessUnit = ''
+                    JiraIssueBusinessLine = ''
+                    JiraIssueProductLine = '' # Parent task has, Child task does not have
+                    JiraIssueCustomerName = ''  # Parent task has, Child task does not have
+                    JiraIssueFeatureComponent = ''
+                    JiraIssueOther = '' # Parent task has, Child task does not have
+                    JiraIssueCaseType = ''
+                    if JiraIssueType in ('Analysis subtask',):
+                        JiraIssueCaseType = str(issue.fields.customfield_10464) # Subtask Only properties
+
+                JiraIssueStatus = str(issue.fields.status)
+                JiraIssueAssignee = str(issue.fields.assignee)
+                JiraIssueReporter = str(issue.fields.reporter)
+                PRRcaEdaAssessor = JiraIssueAssignee
+                JiraIssueLabels = issue.fields.labels  # Common for all
+                if not JiraIssueLabels:
+                    JiraIssueLabels = ''
+                else:
+                    LabelItems = JiraIssueLabels
+                    a = ''
+                    for s in LabelItems:
+                        a = a + s + ','
+                    JiraIssueLabels = a.strip(',')
+                PRID = PRTitle.split(':')[0]
+                print '%s'%PRID
+                if PRID in ('5WhyRca Parent Task for CAS-154355-C888-Test','PR1234','Light Weight RCA','5WhyRca Parent Task for PR389995'):
+                    continue
+                url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+
+                r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                if r.ok == False:
+                    flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                    print PRID
+                a = r.json()
+
+                PRSeverity = a['severity'].strip()
+                PRRelease = a['softwareRelease'].strip()
+                PRAttached = a['problemReportIds']
+                # if not PRAttached:
+                #     PRAttached = ''
+                if not PRAttached:
+                    PRAttached = ''
+                else:
+                    LabelItems = PRAttached
+                    b = ''
+                    for s in LabelItems:
+                        b = b + s + ','
+                        PRAttached = b.strip(',')
+                PRGroupInCharge = a['groupIncharge'].strip()
+                PRProduct = a['product'].strip()
+                ReportedBy = a['reportedBy']
+                FaultCoordinator = a['devFaultCoord']
+                JiraIssueFeature = a['feature']
+                JiraIssueSummary = issue.fields.summary
+                CustomerName = 'Internal'
+                if ReportedBy == 'Customer':
+                    CustomerName = a['customerName']
+                todo = Todo(JiraIssueId, JiraIssuePriority, JiraIssueSourceList, JiraIssueBusinessUnit, \
+                            JiraIssueBusinessLine, JiraIssueProductLine, JiraIssueCustomerName,
+                            JiraIssueFeature, JiraIssueFeatureComponent, \
+                            JiraIssueOther, JiraIssueType, JiraIssueCaseType, JiraIssueStatus,
+                            JiraIssueLabels, JiraIssueAssignee, \
+                            JiraIssueReporter, PRID, PRTitle, PRRelease, PRSeverity, PRGroupInCharge,
+                            PRAttached, PRRcaEdaAssessor, \
+                            PRProduct, ReportedBy, FaultCoordinator,JiraIssueSummary,CustomerName)
+                todo.user = g.user
+                db.session.add(todo)
+                db.session.commit()
+                flash('RCA item was successfully created')
+
+
+        hello = User.query.filter_by(username=g.user.username).first()
+        if hello:
+            normaluser = hello.displayName
+            JiraIssueAssignee = normaluser
+            count = Todo.query.filter_by(JiraIssueReporter=JiraIssueReporter).count()
+            todos = Todo.query.filter_by(JiraIssueReporter=JiraIssueReporter).all()
+            headermessage = 'All MNRCA JIRA RCA/EDA Reported By Me'
+            return render_template('index.html', count=count, headermessage=headermessage,
+                                   todos=todos, user=User.query.get(g.user.id).displayName)
 admin=['leienqing',]
 @app.route('/rca_home',methods=['GET','POST'])
 @login_required
@@ -718,6 +914,11 @@ app.config['dbconfig'] = {'host': '10.68.184.123',
                           'user': 'root',
                           'password': 'jupiter111',
                           'database': 'jupiter4', }
+
+app.config['dbconfig1'] = {'host': '127.0.0.1',
+                          'user': 'root',
+                          'password': '',
+                          'database': 'fddrca', }
 
 class UseDatabase:
     def __init__(self, config):
@@ -2630,21 +2831,22 @@ def show_or_update(PRID):
     todo_item = Todo.query.get(PRID)
     if request.method == 'GET':
         #loginAccount,operationType,prIdorApId,log1,log2,log3,log4,log5,log6,log7,log8,log9,log10,log11,log12
-        syslog_record(g.user.username,"reading",todo_item.PRID,todo_item.IsCatM,todo_item.IsRcaCompleted,\
-                      todo_item.RootCauseCategory,todo_item.FunctionArea,todo_item.IntroducedBy,todo_item.Handler,\
-                      todo_item.TeamAssessor,todo_item.JiraIssueAssignee,'','','','')
+        # syslog_record(g.user.username,"reading",todo_item.PRID,todo_item.IsCatM,todo_item.IsRcaCompleted,\
+        #               todo_item.RootCauseCategory,todo_item.FunctionArea,todo_item.IntroducedBy,todo_item.Handler,\
+        #               todo_item.TeamAssessor,todo_item.JiraIssueAssignee,'','','','')
         #log_request2(get_login_info())
-        if todo_item.user_id == g.user.id or g.user.username in admin:
-            print ("todo_item.user_id=%d"%todo_item.user_id)
-            print ("g.user.id=%d"%g.user.id)
-            print "before"
-            return render_template('view.html',todo=todo_item)
-        else:
-            print "after" 
-            print ("todo_item.user_id=%d"%todo_item.user_id)
-            print ("g.user.id=%d"%g.user.id)
-            flash('This PR is not under your account,You are not authorized to edit this item, Please login with correct account', 'error')           
-            return redirect(url_for('logout'))
+        # if todo_item.user_id == g.user.id or g.user.username in admin:
+        #     print ("todo_item.user_id=%d"%todo_item.user_id)
+        #     print ("g.user.id=%d"%g.user.id)
+        #     print "before"
+        HIs = {'a':'1','b':'2'}
+        return render_template('view.html',todo=todo_item)
+        # else:
+        #     print "after"
+        #     print ("todo_item.user_id=%d"%todo_item.user_id)
+        #     print ("g.user.id=%d"%g.user.id)
+        #     flash('This PR is not under your account,You are not authorized to edit this item, Please login with correct account', 'error')
+        #     return redirect(url_for('logout'))
     elif request.method == 'POST':
         value = request.form['button']
         if value == 'Update':
@@ -2652,84 +2854,7 @@ def show_or_update(PRID):
             if todo_item.user.id == g.user.id or g.user.username in admin:
                 todo_item.PRID = request.form['PRID'].strip()
                 PRID=todo_item.PRID
-                todo_item.PRTitle = request.form['PRTitle']
 
-                todo_item.PRClosedDate  = request.form['PRClosedDate']
-
-                todo_item.PRReportedDate = request.form['PRReportedDate']
-
-                PRReportedDate= request.form['PRReportedDate']
-                PRClosedDate= request.form['PRClosedDate']
-
-                todo_item.PROpenDays = daysBetweenDate(PRReportedDate,PRClosedDate)
-
-                todo_item.PRRcaCompleteDate = request.form['PRRcaCompleteDate']
-                if todo_item.PROpenDays > 14:
-                    IsLongCycleTime = 'Yes'
-                else:
-                    IsLongCycleTime = 'No'
-                todo_item.IsLongCycleTime  = IsLongCycleTime
-                todo_item.IsCatM  = request.form['IsCatM']
-                todo_item.IsRcaCompleted = request.form['IsRcaCompleted']
-                #todo_item.NoNeedDoRCAReason  = request.form['NoNeedDoRCAReason']
-                todo_item.RootCauseCategory  = request.form['RootCauseCategory']
-                todo_item.FunctionArea = request.form['FunctionArea']
-                todo_item.CodeDeficiencyDescription  = request.form['CodeDeficiencyDescription']
-                todo_item.CorrectionDescription  = request.form['CorrectionDescription']
-                todo_item.RootCause = request.form['RootCause']
-                todo_item.IntroducedBy  = request.form['IntroducedBy']
-                #todo_item.Handler  = request.form['Handler']
-                team=request.form['Handler']
-                print("team=%s"%team)
-                if todo_item.JiraRcaBeReqested == 'Yes' and todo_item.Handler != team:
-                    todo_item.Handler = team
-                    if team =='wangli':
-                        LteCategory = todo_item.LteCategory
-                        if LteCategory =='FDD':
-                            todo_item.TeamAssessor = 'jun-julian.hu@nokia-sbell.com'
-                            TeamAssessor = 'jun-julian.hu@nokia-sbell.com'
-                        else:
-                            todo_item.TeamAssessor = 'yuan_xing.wu@nokia-sbell.com'
-                            TeamAssessor = 'yuan_xing.wu@nokia-sbell.com'
-                    else:
-                        todo_item.TeamAssessor = addr_dict[team]['fc']
-                        TeamAssessor = addr_dict[team]['fc']
-                    with UseDatabaseDict(app.config['dbconfig']) as cursor:
-                        _SQL = "select * from user_info where email = '" + TeamAssessor + "'"
-                        cursor.execute(_SQL)
-                        items = cursor.fetchall()
-                    if len(items) != 0:
-                        emailname = items[0]['accountId'].encode('utf-8')
-
-                        jira = getjira()
-                        JiraIssueId = todo_item.RcaSubtaskJiraId
-                        issue = jira.issue(JiraIssueId)
-                        status = issue.fields.status
-                        if status in ['Open','In Progress','Reopened']:
-                            jira.assign_issue(issue, emailname)
-                            todo_item.JiraIssueAssignee = items[0]['displayName'].encode('utf-8')
-
-                hello = User.query.filter_by(username=team).first()
-                todo_item.Handler = team
-                if team == 'wangli':
-                    LteCategory = todo_item.LteCategory
-                    if LteCategory == 'FDD':
-                        todo_item.TeamAssessor = 'jun-julian.hu@nokia-sbell.com'
-                        #TeamAssessor = 'jun-julian.hu@nokia-sbell.com'
-                    else:
-                        todo_item.TeamAssessor = 'yuan_xing.wu@nokia-sbell.com'
-                        #TeamAssessor = 'yuan_xing.wu@nokia-sbell.com'
-                else:
-                    todo_item.TeamAssessor = addr_dict[team]['fc']
-                    #TeamAssessor = addr_dict[team]['fc']
-                todo_item.user_id=hello.id
-                db.session.commit()
-                syslog_record(g.user.username, value, todo_item.PRID, todo_item.IsCatM, todo_item.IsRcaCompleted, \
-                              todo_item.RootCauseCategory, todo_item.FunctionArea, todo_item.IntroducedBy,
-                              todo_item.Handler, \
-                              todo_item.TeamAssessor, todo_item.JiraIssueAssignee, '', '', '', '')
-                if IsLongCycleTime =='Yes':
-                    update_longcycletimercatable(PRID,request)
                 return redirect(url_for('index'))
             else:
                 flash('You are not authorized to edit this item','error')
@@ -2938,73 +3063,10 @@ def show_or_updateap(APID):
     return redirect(url_for('show_or_updateap',APID=APID))
 
 
-# @app.route('/register' , methods=['GET','POST'])
-# def register():
-#     if request.method == 'GET':
-#         return render_template('register.html')
-#     username = request.form['username']
-#     password = request.form['password']
-#     user = User(request.form['username'] , request.form['password'],request.form['email'])
-#     registered_user = User.query.filter_by(username=username).first()
-#     if registered_user is None:
-#         db.session.add(user)
-#         db.session.commit()
-#         flash('User successfully registered')
-#         return redirect(url_for('login'))
-#     else:
-#         flash('User name has been used,please try other one')
-#         return redirect(url_for('register'))
-#
-#
-# @app.route('/login',methods=['GET','POST'])
-# def login():
-#     if request.method == 'GET':
-#         return render_template('login.html')
-#
-#     username = request.form['username']
-#     password = request.form['password']
-#     remember_me = False
-#     if 'remember_me' in request.form:
-#         #remember_me = BooleanField('Keep me logged in')
-#         remember_me = True
-#     registered_user = User.query.filter_by(username=username).first()
-#     if registered_user is None:
-#         flash('Username is invalid' , 'error')
-#         return redirect(url_for('login'))
-#     if not registered_user.check_password(password):
-#         flash('Password is invalid','error')
-#         return redirect(url_for('login'))
-#     login_user(registered_user, remember = remember_me)
-#     flash('Logged in successfully')
-#     return redirect(request.args.get('next') or url_for('index'))
-#
-# @app.route('/logout')
-# def logout():
-#     logout_user()
-#     return redirect(url_for('index'))
-#
-# @login_manager.user_loader
-# def load_user(id):
-#     return User.query.get(int(id))
-#
-# @app.before_request
-# def before_request():
-#     g.user = current_user
-
 def sleeptime(hour,min,sec):
     return hour*3600+min*60+sec
 
-def addApColumn():
-    with UseDatabase(app.config['dbconfig']) as cursor:
-        #alter table user MODIFY new1 VARCHAR(1) -->modify field type
-        _SQL = "alter table apstatus ADD column (InjectionRootCauseEdaCause  VARCHAR(1024),\
-    RcaEdaCauseType  VARCHAR(128),\
-    RcaEdaActionType  VARCHAR(32),\
-    TargetRelease  VARCHAR(128),\
-    CustomerAp  VARCHAR(32),\
-    ApCategory  VARCHAR(32),\
-    ShouldHaveBeenDetected  VARCHAR(32),\
-    ApJiraId  VARCHAR(32))"
+
 
 def modifyColumn():
     with UseDatabase(app.config['dbconfig']) as cursor:
@@ -3024,79 +3086,86 @@ def syslog_view():
                            the_row_titles=titles,
                            the_data=contents,)
 
+def upload_sharepoint(PRID):
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    SHAREPOINT_COMMON_USER = 'enqing.lei@nokia-sbell.com'
+    SHAREPOINT_COMMON_PWD = 'kkcqqgfmmxkgjjmd'
+    site_url ='https://nokia.sharepoint.com/sites/LTERCA/'
+    ctx_auth = AuthenticationContext(site_url)
+    print "Authenticate credentials"
+    if ctx_auth.acquire_token_for_user(SHAREPOINT_COMMON_USER, SHAREPOINT_COMMON_PWD):
+        ctx = ClientContext(site_url, ctx_auth)
+        options = RequestOptions(site_url)
+        ctx_auth.authenticate_request(options)
+        ctx.ensure_form_digest(options)
+        path = get_5whyrca_template(PRID)
+        link = upload_binary_file(path,ctx_auth)
+        return link
+    return ctx_auth.get_last_error()
 
 
-# import ldap
-# from flask import request, render_template, flash, redirect, \
-#     url_for, Blueprint, g
-# from flask.ext.login import current_user, login_user, \
-#     logout_user, login_required
-# from my_app import login_manager, db
-# from my_app.auth.models import User, LoginForm
-#
-# auth = Blueprint('auth', __name__)
-#
-#
-# @login_manager.user_loader
-# def load_user(id):
-#     return User.query.get(int(id))
-#
-#
-# @auth.before_request
-# def get_current_user():
-#     g.user = current_user
-
-#
-# @auth.route('/')
-# @auth.route('/home')
-# def home():
-#     return render_template('home.html')
-#
-#
-# @auth.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if current_user.is_authenticated():
-#         flash('You are already logged in.')
-#         return redirect(url_for('auth.home'))
-#
-#     form = LoginForm(request.form)
-#
-#     if request.method == 'POST' and form.validate():
-#         username = request.form.get('username')
-#         password = request.form.get('password')
-#
-#         try:
-#             User.try_login(username, password)
-#         except ldap.INVALID_CREDENTIALS:
-#             flash(
-#                 'Invalid username or password. Please try again.',
-#                 'danger')
-#             return render_template('login.html', form=form)
-#
-#         user = User.query.filter_by(username=username).first()
-#
-#         if not user:
-#             user = User(username, password)
-#             db.session.add(user)
-#             db.session.commit()
-#         login_user(user)
-#         flash('You have successfully logged in.', 'success')
-#         return redirect(url_for('auth.home'))
-#
-#     if form.errors:
-#         flash(form.errors, 'danger')
-#
-#     return render_template('login.html', form=form)
-#
-#
-# @auth.route('/logout')
-# @login_required
-# def logout():
-#     logout_user()
-#     return redirect(url_for('auth.home'))
+def get_5whyrca_template(PRID):
+    file_dir = os.path.join(basedir, '5WhyRcaTemplate')
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+    templatefilename = 'RCA_EDA_Analysis_Template_LTE_BL-mode.xlsm'
+    fullpatholdtemplatefilename = 'D://01-TMT/00-Formal RCA/'+ templatefilename
+    #fullpatholdtemplatefilename = os.path.join(file_dir, templatefilename)
+    #fullpatholdtemplatefilename = 'D:\\01-TMT\\00-Formal RCA' + templatefilename
+    filename = PRID + '.xlsm'
+    fullpathnewtemplatefilename = os.path.join(file_dir, filename)
+    shutil.copyfile(fullpatholdtemplatefilename, fullpathnewtemplatefilename)
+    return fullpathnewtemplatefilename
 
 
+def upload_binary_file(file_path, ctx_auth):
+    """Attempt to upload a binary file to SharePoint"""
+    PRID = "CAS-148023-8888"
+    base_url = 'https://nokia.sharepoint.com/sites/LTERCA/'
+    folder_url = "RcaStore"
+    file_name = basename(file_path)
+    files_url ="{0}/_api/web/GetFolderByServerRelativeUrl('{1}')/Files/add(url='{2}', overwrite=true)"
+    full_url = files_url.format(base_url, folder_url, file_name)
+    file_link = "{0}/_api/web/GetFileByServerRelativePath('{1}')/Files/add(url='{2}', overwrite=true)"
+    file_full_link = file_link.format(base_url, folder_url, file_name)
+    options = RequestOptions(base_url)
+    context = ClientContext(base_url, ctx_auth)
+    context.request_form_digest()
+
+    options.set_header('Accept', 'application/json; odata=verbose')
+    options.set_header('Content-Type', 'application/octet-stream')
+    options.set_header('Content-Length', str(os.path.getsize(file_path)))
+    options.set_header('X-RequestDigest', context.contextWebInformation.form_digest_value)
+    options.method = 'POST'
+
+    with open(file_path, 'rb') as outfile:
+
+        # instead of executing the query directly, we'll try to go around
+        # and set the json data explicitly
+
+        context.authenticate_request(options)
+
+        data = requests.post(url=full_url, data=outfile, headers=options.headers, auth=options.auth)
+
+        if data.status_code == 200:
+            # our file has uploaded successfully
+            # let's return the URL
+            base_site = data.json()['d']['Properties']['__deferred']['uri'].split("/sites")[0]
+            link = data.json()['d']['LinkingUrl']
+            relative_url = data.json()['d']['ServerRelativeUrl'].replace(' ', '%20')
+            #LinkingUri
+            #return base_site + relative_url
+            return link
+        else:
+            return data.json()['error']
+
+def addApColumn():
+    with UseDatabase(app.config['dbconfig1']) as cursor:
+        #alter table user MODIFY new1 VARCHAR(1) -->modify field type
+        _SQL = "alter table jirarcatable1 ADD column CustomerName  VARCHAR(128)"
+        cursor.execute(_SQL)
 
 if __name__ == '__main__':
     #modifyColumn()
+    # addApColumn()
     app.run(debug=True,host='0.0.0.0',port=8899)
