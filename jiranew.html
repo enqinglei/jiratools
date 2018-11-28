@@ -1,0 +1,881 @@
+{% extends "jiralayout.html" %} 
+{% block body %}
+<form action="" method=post class="form-horizontal">
+	<h2>Create and Assign 5-WhyRca MNRCA JIRA Task For PRONTOs:</h2>
+<table>
+<p>Use this form to Create MNRCA RCA/EDA JIRA task for Customer Prontos and Do the Assignment:</p>
+<!---<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:25px;">{{PRID}} </textarea></td></tr> --->
+<tr><td><font color="black"><b>PRID<span style="color:red">*</span>:</td><td><input name='PRID' id='PRID' type='TEXT' value ='{{PRID}}'style="width:205px;height:23px; background-color:#FFFFCC" ">
+<!---<input type="hidden" name="PRID" value="{{PRID}}" /> --->
+&nbsp <font color="black"><b>Task Type<span style="color:red">*</span> :&nbsp <input type="text" name="RCAEDAType" id="t7" value ='{{RCAEDAType}}' onFocus="showSelect7();" style=" width:185px; height:23px">    
+<select name="sel7" id="sel7" style="display:none; width:199px;height:33px" onchange="document.getElementById('t7').value=this.value">  
+<option value='{{RCAEDAType}}'>{{RCAEDAType}}</option> 
+<option value="5WhyRCA">5WhyRCA</option>
+<option value="Analysis subtask">Analysis subtask</option>
+</select>
+&nbsp <font color="black"><b>Case Type<span style="color:red">*</span>:&nbsp <input type="text" name="CaseType" id="t8" value ='{{CaseType}}' onFocus="showSelect8();" style=" width:183px; height:23px">    
+<select name="sel8" id="sel8" style="display:none; width:197px;height:33px" onchange="document.getElementById('t8').value=this.value">  
+<option value='{{CaseType}}'>{{CaseType}}</option> 
+<option value="RCA and EDA">RCA and EDA</option>
+<option value="RCA">RCA</option>
+<option value="EDA">EDA</option>
+
+</select>
+</td></tr>
+ 			
+<tr><td><font color="green"> PRTitle:</td><td><textarea name='PRTitle' id='PRTitle' style="width:800px;height:25px;">{{PRTitle}} </textarea>
+
+</td></tr>
+<!---<tr><td>PRReportedDate:</td><td><textarea name='PRReportedDate' style="width:800px;height:25px;">{{PRReportedDate}} </textarea></td></tr>--->
+<!---
+<tr><td>PRClosedDate:</td><td><textarea name='PRClosedDate' style="width:800px;height:25px;">{{PRClosedDate}} </textarea></td></tr>
+<tr><td>IsLongCycleTime:</td><td><textarea name='IsLongCycleTime' style="width:800px;height:25px;">{{IsLongCycleTime}} </textarea></td></tr>
+<tr><td>PRRcaCompleteDate:</td><td><textarea name='PRRcaCompleteDate' style="width:800px;height:25px;">{{PRRcaCompleteDate}} </textarea></td></tr>
+--->
+<tr><td><font color="green"> Severity:</td><td><textarea name='Severity' id='Severity' style="width:110px;height:25px;">{{Severity}}</textarea> &nbsp <font color="green"> PRRelease: &nbsp <textarea name='PRRelease' id='PRRelease' style="width:100px;height:25px;">{{PRRelease}} </textarea> &nbsp
+<font color="green">Feature:&nbsp <textarea name='Feature' id='Feature' style="width:120px;height:25px;">{{Feature}} </textarea> 
+&nbsp <font color="green"> FeatureComment: &nbsp <textarea name='FeatureComment' id='FeatureComment' style="width:122px;height:25px;">{{FeatureComment}} </textarea></td></tr>
+<tr><td><font color="green"> PRAttached:</td><td><textarea name='PRAttached' id='PRAttached' style="width:800px;height:25px;">{{PRAttached}}</textarea></td></tr> 
+<tr><td><font color="green"> Product:</td><td><textarea name='Product' id='Product' style="width:170px;height:25px;">{{Product}} </textarea> &nbsp &nbsp <font color="green"> GroupInCharge: &nbsp <textarea name='GroupInCharge' id='GroupInCharge' style="width:250px;height:25px;">{{GroupInCharge}} </textarea> 
+&nbsp <font color="green"> FaultAnalysisId:&nbsp <textarea name='FaultAnalysisId' id='FaultAnalysisId' style="width:103px;height:25px;" >{{FaultAnalysisId}} </textarea> </td></tr>
+
+<tr><td> <font color="black"><b>Priority<span style="color:red">*</span>:</td><td><input type="text" name="Priority" id="t3" value ='{{Priority}}' onFocus="showSelect3();" style=" width:170px; height:23px">    
+<select name="sel3" id="sel3" style="display:none; width:185px;height:33px" onchange="document.getElementById('t3').value=this.value">
+<option value='{{Priority}}'>{{Priority}}</option> 
+<option value="1">Blocker</option>
+<option value="2">Critical</option>
+<option value="3">
+Major         </option>
+<option value="4">
+Minor         </option>
+<option  value="5">
+Trivial         </option>
+<option value="6">
+Documentary         </option>
+<option  value="10000">
+Unknown         </option>
+<option  value="10001">
+Medium         </option>
+<option value="10002">
+Normal         </option>
+<option  value="10100">
+High         </option>
+<option  value="10101">
+Low         </option>
+</select>
+
+&nbsp <font color="black"><b>Labels:&nbsp <textarea name='Labels' style="width:200px;height:25px;" placeholder= "   AAAA BBBB"  ></textarea>
+&nbsp <font color="black"><b>FeatureComponent:&nbsp <textarea name='FeatureComponent' style="width:182px;height:25px;" value ='{{FeatureComponent}}' ></textarea>
+<tr><td><font color="black"><b>Source List<span style="color:red">*</span>:</td><td><input type="text" name="SourceList" id="t2" value ='{{SourceList}}' onFocus="showSelect2();" style=" width:170px; height:23px">    
+<select name="sel2" id="sel2" style="display:none; width:185px;height:33px" onchange="document.getElementById('t2').value=this.value">  
+<option value='{{SourceList}}'>{{SourceList}}</option> 
+<option value="">None</option>
+<option value="206960">NCDR</option>
+<option value="206961">DQR deep dive.CES (VoC)</option>
+<option value="206962">Internal R &amp; D improvement</option>
+<option value="206963">Lessons learned</option>
+</select>
+&nbsp <font color="black"><b>Business Unit<span style="color:red">*</span>:&nbsp <input type="text" name="BusinessUnit" id="t1" value ='{{BusinessUnit}}' onFocus="showSelect1();" style=" width:495px; height:23px">    
+<select name="sel1" id="sel1" style="display:none; width:509px;height:33px" onchange="document.getElementById('t1').value=this.value">  
+<option value='{{BusinessUnit}}'>{{BusinessUnit}}</option> 
+<option value="-1">None</option>
+<option value="189744">Mobile Networks Products</option>
+<option value="189745">Converged Core</option>
+<option value="189746">Advanced Mobile Networks Solutions (AMS)</option>
+<option value="189747">MN Service</option>
+</select>
+</td></tr>
+<tr><td><font color="black"><b>Business Line<span style="color:red">*</span>:</td><td> <input type="text" name="BusinessLine" id="t4" value ='{{BusinessLine}}' onFocus="showSelect4();" style=" width:393px; height:23px">    
+<select name="sel4" id="sel4" style="display:none; width:407px;height:33px" onchange="document.getElementById('t4').value=this.value">  
+<option value='{{BusinessLine}}'>{{BusinessLine}}</option> 
+<option value="-1">None</option>
+			<option  value="205171">
+LTE
+</option>
+				<option value="205172">
+HetRAN
+</option>
+				<option value="205173">
+5G
+</option>
+				<option value="205174">
+RF&amp;AA
+</option>
+				<option value="205175">
+BBP
+</option>
+				<option value="205176">
+RMA
+</option>
+				<option value="205177">
+Customer Support
+</option>
+				<option value="205178">
+Architecture
+</option>
+				<option value="205179">
+Telco Cloud 
+</option>
+				<option value="205180">
+3G Core
+</option>
+				<option value="205181">
+Cloud SDM
+</option>
+				<option value="205182">
+Cloud IMS 
+</option>
+				<option value="205183">
+Customer and Solution
+</option>
+				<option value="205184">
+Small Cell &amp; WiFi Solutions
+</option>
+				<option value="205185">
+Public Sector, Complementary Solutions and Partner
+</option>
+							<option value="205187">
+X-Haul
+</option>
+				<option value="205188">
+NA
+</option>
+				<option value="205189">
+WVS
+</option>
+				<option value="219023">
+SRAN
+</option>
+</select>
+
+&nbsp <font color="black"><b>Product Line<span style="color:red">*</span>:&nbsp <input type="text" name="ProductLine" id="t5" value ='{{ProductLine}}' onFocus="showSelect5();" style=" width:280px; height:23px">    
+<select name="sel5" id="sel5" style="display:none; width:295px;height:33px" onchange="document.getElementById('t5').value=this.value">  
+<option value='{{ProductLine}}'>{{ProductLine}}</option>
+<option value="-1">None</option>
+<option value="179991">AED</option>
+<option value="179992">BBP HW</option>
+<option value="179993">BBP OPSW</option>
+<option value="179995">BTS Site Manager</option>
+<option value="179996">CFX</option>
+<option value="179997">Cloud BTS</option>
+<option value="179998">CuDo</option>
+<option value="179999">DCM</option>
+<option value="180000">FDD LTE</option>
+<option value="180001">Femto</option>
+<option value="180002">Flexi Platform SW</option>
+<option value="180003">Flexi Zone</option>
+<option value="180004">GSM BTS</option>
+<option value="180005">HetRAN BTS</option>
+<option value="180006">HSS/vHSS</option>
+<option value="180007">HW</option>
+<option value="180008">MEC</option>
+<option value="180009">Metro</option>
+<option value="180010">MGW/OSP</option>
+<option value="180011">MSS</option>
+<option value="180012">N/A</option>
+<option value="180013">NCIO</option>
+<option value="180014">NDCS</option>
+<option value="180015">NLS</option>
+<option value="180016">NT-HLR/vHLR</option>
+<option value="180017">One NDS</option>
+<option value="180018">One-EIR </option>
+<option value="180019">One-MNP</option>
+<option value="180020">oTAS</option>
+<option value="180021">PMOD – VGP</option>
+<option value="180022">RFHW</option>
+<option value="180023">RFSW</option>
+<option value="180024">RNC, BSC, RCP, vRNC</option>
+<option value="180025">SDL</option>
+<option value="180026">SoC</option>
+<option value="180027">SRAN/SBTS</option>
+<option value="180028">TD LTE</option>
+<option value="180029">WBTS</option>
+<option value="180030">WiFi/ZC</option>
+<option value="180031">GSM_BTS</option>
+<option value="180032">5G Application</option>
+<option value="180033">5G L1</option>
+<option value="180034">nTAS</option>
+</select>
+
+</td></tr>
+
+<tr><td><font color="black"><b> Customer<span style="color:red">*</span>:</td><td> <input type="text" name="Customer" id="t6" value ='{{Customer}}' onFocus="showSelect6();" style=" width:550px; height:23px">    
+<select name="sel6" id="sel6" style="display:none; width:565px;height:33px" onchange="document.getElementById('t6').value=this.value">  
+<option value='{{Customer}}'>{{Customer}}</option>
+<option value="-1">None</option>
+<option value="206299">
+ADVANCED WIRELESS NETWORKS CO., LTD
+</option>
+<option value="206300">
+AIS, Thailand
+</option>
+<option value="206301">
+America Movil Head Office, Mexico, incl. AMX Colombia
+</option>
+<option value="206302">
+AMX
+</option>
+<option value="206303">
+AMX (Claro), Argentina
+</option>
+<option value="206304">
+AMX (Claro), Chile
+</option>
+<option value="206305">
+AT&amp;T, USA
+</option>
+<option value="206306">
+Avea
+</option>
+<option value="206307">
+Bell Canada
+</option>
+<option value="206308">
+BELL MOBILITY INC.
+</option>
+<option value="206309">
+BHARTI
+</option>
+<option value="206310">
+Bharti, India
+</option>
+<option value="206311">
+BSNLMTNL
+</option>
+<option value="206312">
+BT, EE &amp; MBNL, UK
+</option>
+<option value="206313">
+CA
+</option>
+<option value="206314">
+CEWA
+</option>
+<option value="206315">
+China Mobile, China
+</option>
+<option value="206316">
+China Telecom, China
+</option>
+<option value="206317">
+China Unicom, China
+</option>
+<option value="206318">
+Chunghwa Telecom, Taiwan
+</option>
+<option value="206319">
+DT Croatia
+</option>
+<option value="206320">
+DT, Germany
+</option>
+<option value="206321">
+Elisa
+</option>
+<option value="206322">
+ERICSSON TELECOMUNICAZIONI S.P.A. WIND IT
+</option>
+<option value="206323">
+EVERYTHING EVERYWHERE LIMITED (ORANGE PCS)
+</option>
+<option value="206324">
+France Telecom
+</option>
+<option value="206325">
+Free, France
+</option>
+<option value="206326">
+HBTSCIF
+</option>
+<option value="206327">
+HBTSSB
+</option>
+<option value="206328">
+Hutchison 3G UK
+</option>
+<option value="206329">
+Hutchison IRL
+</option>
+<option value="206330">
+ICE Communication Norge AS
+</option>
+<option value="206331">
+IDEA
+</option>
+<option value="206332">
+IDEA CELLULAR LTD - KERELA
+</option>
+<option value="206333">
+Idea, India
+</option>
+<option value="206334">
+Indosat, Indonesia
+</option>
+<option value="206335">
+IRANCELL
+</option>
+<option value="206336">
+KDDI, Japan
+</option>
+<option value="206337">
+Korea Telecom, Korea
+</option>
+<option value="206338">
+KT CORPORATION
+</option>
+<option value="206339">
+KT DJ Korea
+</option>
+<option value="206340">
+KT Korea
+</option>
+<option value="206341">
+LG U+, Korea
+</option>
+<option value="206342">
+LOCOP
+</option>
+<option value="206343">
+MBNL
+</option>
+<option value="206344">
+Megafon, Russia
+</option>
+<option value="206345">
+MOBILE TELECOMMUNICATIONS, SAUDI
+</option>
+<option value="206346">
+MobileOne Ltd.
+</option>
+<option value="206347">
+Mobily, Saudi Arabia
+</option>
+<option value="206348">
+MTS, Russia
+</option>
+<option value="206349">
+MUV
+</option>
+<option value="206350">
+NA
+</option>
+<option value="206351">
+NTT DoCoMo, Japan
+</option>
+<option value="206352">
+O2 CZECH REPUBLIC
+</option>
+<option value="206353">
+O2 GBR
+</option>
+<option value="206354">
+O2, HU
+</option>
+<option value="206355">
+OI
+</option>
+<option value="206356">
+Oi, Brazil
+</option>
+<option value="206357">
+Ooredoo Tunisie S.A.
+</option>
+<option value="206358">
+Ooredoo, Myanmar
+</option>
+<option value="206359">
+Ooredoo, Qatar
+</option>
+<option value="206360">
+Optus, Australia
+</option>
+<option value="206361">
+ORANGE
+</option>
+<option value="206362">
+Orange, France
+</option>
+<option value="206363">
+PLDT Smart, Philipines
+</option>
+<option value="206364">
+PROXIMUS, BE
+</option>
+<option value="206365">
+PT Telkomsel
+</option>
+<option value="206366">
+Q-TEL
+</option>
+<option value="206367">
+SAFARICOM
+</option>
+<option value="206368">
+SAV
+</option>
+<option value="206369">
+SFR, France
+</option>
+<option value="206370">
+SK telecom, Inc
+</option>
+<option value="206371">
+SK Telecom, Korea
+</option>
+<option value="206372">
+SKIL
+</option>
+<option value="206373">
+Softbank (incl. WCP, Y-Mobile), Japan
+</option>
+<option value="206374">
+Sprint, USA
+</option>
+<option value="206375">
+STC, Saudi Arabia
+</option>
+<option value="206376">
+T COM DEU
+</option>
+<option value="206377">
+T- Mobile, Deutschland
+</option>
+<option value="206378">
+T-Mobile Deutschland
+</option>
+<option value="206379">
+T-MOBILE POLSKA S.A.
+</option>
+<option value="206380">
+T-Mobile, USA
+</option>
+<option value="206381">
+Taiwan Mobile, Taiwan
+</option>
+<option value="206382">
+TATA
+</option>
+<option value="206383">
+TELE2 NLD
+</option>
+<option value="206384">
+Tele2, Russia
+</option>
+<option value="206385">
+Telecom (TIM), Italia
+</option>
+<option value="206386">
+TELECOM ITALIA S.P.A. (MOBILE)
+</option>
+<option value="206387">
+Telefonica O2, UK
+</option>
+<option value="206388">
+Telefonica, Germany
+</option>
+<option value="206389">
+Telefonica, Spain
+</option>
+<option value="206390">
+TELIA MOBILE AB, SE
+</option>
+<option value="206391">
+Telkomsel, Indonesia
+</option>
+<option value="206392">
+TF
+</option>
+<option value="206393">
+THM
+</option>
+<option value="206394">
+TIM
+</option>
+<option value="206395">
+TIM, Brazil
+</option>
+	<option value="206397">
+UNITED STATES CELLULAR CORP.
+</option>
+<option value="206398">
+US MA
+</option>
+<option value="206399">
+VERIZON
+</option>
+<option value="206400">
+Verizon, USA
+</option>
+<option value="206401">
+VF
+</option>
+<option value="206402">
+Viettel, Vietnam
+</option>
+<option value="206403">
+Vimpelcom, Russia
+</option>
+<option value="206404">
+Vodacom (Pty.) Ltd.
+</option>
+<option value="206405">
+Vodacome, South Africa (RSA)
+</option>
+<option value="206406">
+Vodafone - Chennai
+</option>
+<option value="206407">
+VODAFONE EGYPT TEL
+</option>
+<option value="206408">
+Vodafone, India
+</option>
+<option value="206409">
+Vodafone, Italy
+</option>
+<option value="206410">
+VTG AFR TZ (VNM)
+</option>
+<option value="206411">
+WE
+</option>
+<option value="206412">
+Wind, Canada
+</option>
+<option value="206413">
+Zain Saudi Arabia
+</option>
+<option value="206414">
+Vodafone
+</option>
+<option value="206415">
+CUC
+</option>
+<option value="206416">
+Bharti Airtel Limited
+</option>
+<option value="206417">
+MTS UA
+</option>
+<option value="206418">
+T-MOBILE USA
+</option>
+<option value="206419">
+SFR Siege
+</option>
+<option value="206420">
+Optus
+</option>
+<option value="206421">
+SOFTBANK MOBILE Corp.
+</option>
+<option value="206422">
+Telefonica Moviles de Espana
+</option>
+<option value="206423">
+Vodafone UK Limited
+</option>
+<option value="206424">
+SoftBank Corp.
+</option>
+<option value="206425">
+Optus Networks Pty Ltd
+</option>
+<option value="206426">
+ORANGE SKILL CENTER
+</option>
+<option value="206427">
+Tt-Netvaerket P/S
+</option>
+<option value="206428">
+IDEA CELLULAR LTD - UPEAST
+</option>
+<option value="206429">
+Free Mobile
+</option>
+	<option value="213306">
+CMCC Zhejiang
+</option>
+	<option value="213307">
+CMCC Fujian
+</option>
+	<option value="213308">
+CMCC Hunan
+</option>
+	<option value="213309">
+CUC Shanghai
+</option>
+</select>
+
+&nbsp <font color="blue"><b> Other :&nbsp  <input type="text" name="Other" id="Other" value ='{{Other}}'  style=" width:175px; height:23px">
+</td></tr> 
+ 
+<tr><td><font color="green"><b>AssignTo<span style="color:red">*</span>:</td><td><input name='AssignTo' id='AssignTo' placeholder= "    Email adress: aa.bb@mm.nn" style="width:300px;height:25px;" value='{{AssignTo}}'> &nbsp <font color="green"> DisplayName :&nbsp 
+<input name='DisplayAssignTo' id='idDisplayAssignTo' style="width:399px;height:25px;" value='{{DisplayAssignTo}}'></td></tr>
+
+
+</table>
+
+<div class="control-group" style="margin-left:-72px">
+	<div class="controls">
+
+	  <button name="button" id='CreateAndAssignBtn' class="btn btn-success" value='CreateAndAssignBtn'  >CreateAndAssignIssue</button><a href="{{ url_for('jirarca_home') }}"> Back to list</a>
+	</div>
+</div>
+</form>
+
+
+<script type="text/javascript">
+//AJS.$("#select2-example").auiSelect2();
+
+$.get('/new').done(function (data) {
+	$('#PRTitle').val(data.title);
+})
+
+/*
+$(document).ready(function(){
+	$("input").focus(function(){       //获得焦点事件
+	   $("input").css("background-color","#FFFFCC");
+	});
+	$("input").blur(function(){        //失去焦点事件
+	   $("input").css("background-color","#D6D6FF");
+	});
+});
+*/
+
+     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+
+
+$('#test1').blur(function(){
+	var parm = $('#test1').val().trim();
+	$.post("后台操作URL",{'val':parm},function(){
+		$('#test2').val(返回数据);
+	},返回数据类型);
+});
+/*
+function flaskcall(){
+        var strEmployeeNo = $('#PRID').val().trim();
+        $.ajax({
+            type: "post",
+          async: true,//表示异步执行；这里同步异步都是没有问题的，关于同步和异步自己目前还不是很清楚。
+            url: "/new12", //Controller中的方法名
+            data: { "PRID": strEmployeeNo },     //参数，从前台获取的教工号
+            success: function(data) {
+                $('#PRTitle').val(data.PRTitle);        //显示教师的名字，data为Json，里面只有教师名一个属性故可以直接使用。
+              //有时候我们需要将json转化成字符串，方法见文尾
+            },
+            error: function(err) {
+                alert("PRID Not exist,Please Check and re input!!");
+            }
+        });
+}
+
+*/
+//随教工号的变化得到相应的教师名称
+    $('#PRID').blur(function () {
+        var strEmployeeNo = $('#PRID').val().trim();
+        $.ajax({
+            type: "post",
+          async: true,//表示异步执行；这里同步异步都是没有问题的，关于同步和异步自己目前还不是很清楚。
+            url: "/loadProntoInfo", //Controller中的方法名
+            data: { "PRID": strEmployeeNo },     //参数，从前台获取的教工号
+            success: function(data) {
+                $('#PRTitle').val(data.title);  
+				$('#Severity').val(data.severity); 
+				$('#PRRelease').val(data.softwareRelease);  
+				$('#Feature').val(data.feature); 
+				$('#featureComment').val(data.featureComment);  
+				$('#PRAttached').val(data.problemReportIds); 
+				$('#Product').val(data.product);  
+				$('#GroupInCharge').val(data.groupIncharge); 
+				$('#FaultAnalysisId').val(data.faultAnalysisId); 
+            },
+            error: function(err) {
+                alert("PRID Error");
+            }
+        });
+});
+
+
+    $('#AssignTo').blur(function () {
+        var strEmployeeNo = $('#AssignTo').val().trim();
+        $.ajax({
+            type: "post",
+          async: true,//表示异步执行；这里同步异步都是没有问题的，关于同步和异步自己目前还不是很清楚。
+            url: "/loadAssigneeInfo", //Controller中的方法名
+            data: { "AssignTo": strEmployeeNo },     //参数，从前台获取的教工号
+            success: function(data) {
+                $('#idDisplayAssignTo').val(data.AssignTo);        //显示教师的名字，data为Json，里面只有教师名一个属性故可以直接使用。
+              //有时候我们需要将json转化成字符串，方法见文尾
+            },
+            error: function(err) {
+                alert("Email Error");
+            }
+        });
+});
+
+$('#CourseCode').blur(function() {
+        var jsonStr = "";
+        var strCourseCode = $('#CourseCode').val().trim();
+       $.post("/OnClass/QueryCourseNameByCourseCode", { 'strCourseCode': strCourseCode }, function (data) {
+            $('#CourseName').val(data);
+        });
+});
+
+
+
+function showSelect(){  
+   var _t = document.getElementById('t');  
+   var _s = document.getElementById('sel');  
+   if( _t.style.display == ''){  
+       _t.style.display = 'none';  
+   }  
+   else{  
+       _t.style.display = '';  
+    }  
+   if ( _s.style.display == 'none' ){  
+        _s.style.display = '';  
+    }  
+    else{  
+        _s.style.display = 'none';  
+    }  
+}  
+function showSelect1(){  
+   var _t1 = document.getElementById('t1');  
+   var _s1 = document.getElementById('sel1');  
+   if( _t1.style.display == ''){  
+       _t1.style.display = 'none';  
+   }  
+   else{  
+       _t1.style.display = '';  
+    }  
+   if ( _s1.style.display == 'none' ){  
+        _s1.style.display = '';  
+    }  
+    else{  
+        _s1.style.display = 'none';  
+    }  
+} 
+function showSelect2(){  
+   var _t2 = document.getElementById('t2');  
+   var _s2 = document.getElementById('sel2');  
+   if( _t2.style.display == ''){  
+       _t2.style.display = 'none';  
+   }  
+   else{  
+       _t2.style.display = '';  
+    }  
+   if ( _s2.style.display == 'none' ){  
+        _s2.style.display = '';  
+    }  
+    else{  
+        _s2.style.display = 'none';  
+    }  
+} 
+function showSelect3(){  
+   var _t3 = document.getElementById('t3');  
+   var _s3 = document.getElementById('sel3');  
+   if( _t3.style.display == ''){  
+       _t3.style.display = 'none';  
+   }  
+   else{  
+       _t3.style.display = '';  
+    }  
+   if ( _s3.style.display == 'none' ){  
+        _s3.style.display = '';  
+    }  
+    else{  
+        _s3.style.display = 'none';  
+    }  
+} 
+
+function showSelect4(){  
+   var _t4 = document.getElementById('t4');  
+   var _s4 = document.getElementById('sel4');  
+   if( _t4.style.display == ''){  
+       _t4.style.display = 'none';  
+   }  
+   else{  
+       _t4.style.display = '';  
+    }  
+   if ( _s4.style.display == 'none' ){  
+        _s4.style.display = '';  
+    }  
+    else{  
+        _s4.style.display = 'none';  
+    }  
+}
+function showSelect5(){  
+   var _t5 = document.getElementById('t5');  
+   var _s5 = document.getElementById('sel5');  
+   if( _t5.style.display == ''){  
+       _t5.style.display = 'none';  
+   }  
+   else{  
+       _t5.style.display = '';  
+    }  
+   if ( _s5.style.display == 'none' ){  
+        _s5.style.display = '';  
+    }  
+    else{  
+        _s5.style.display = 'none';  
+    }  
+}
+
+function showSelect6(){  
+   var _t6 = document.getElementById('t6');  
+   var _s6 = document.getElementById('sel6');  
+   if( _t6.style.display == ''){  
+       _t6.style.display = 'none';  
+   }  
+   else{  
+       _t6.style.display = '';  
+    }  
+   if ( _s6.style.display == 'none' ){  
+        _s6.style.display = '';  
+    }  
+    else{  
+        _s6.style.display = 'none';  
+    }  
+}
+
+function showSelect7(){  
+   var _t7 = document.getElementById('t7');  
+   var _s7 = document.getElementById('sel7');  
+   if( _t7.style.display == ''){  
+       _t7.style.display = 'none';  
+   }  
+   else{  
+       _t7.style.display = '';  
+    }  
+   if ( _s7.style.display == 'none' ){  
+        _s7.style.display = '';  
+    }  
+    else{  
+        _s7.style.display = 'none';  
+    }  
+}
+
+function showSelect8(){  
+   var _t8 = document.getElementById('t8');  
+   var _s8 = document.getElementById('sel8');  
+   if( _t8.style.display == ''){  
+       _t8.style.display = 'none';  
+   }  
+   else{  
+       _t8.style.display = '';  
+    }  
+   if ( _s8.style.display == 'none' ){  
+        _s8.style.display = '';  
+    }  
+    else{  
+        _s8.style.display = 'none';  
+    }  
+}
+</script>
+
+
+{% endblock %}
+
+
+

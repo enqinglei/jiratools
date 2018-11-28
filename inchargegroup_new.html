@@ -1,0 +1,26 @@
+{% extends "jiralayout.html" %} 
+{% block body %}
+<form action="" method=post class="form-horizontal">
+	<h2>Register New InChargeGroupName:</h2>
+<table>
+<p>Use this form to Register New InChargeGroupName:</p>
+<!---<tr><td>PRID:</td><td><textarea name='PRID' style="width:800px;height:25px;">{{PRID}} </textarea></td></tr> --->
+<tr><td><font color="black"><b>InChargeGroupName<span style="color:red">*</span>:</td><td><input name='InChargeGroupName'  type='TEXT' value ='{{InChargeGroupName}}'style="width:800px;height:25px; background-color:#FFFFCC" "></td></tr>
+ 			
+<tr><td><font color="green"> <b>AssessorEmailName<span style="color:red">*</span>:</td><td><textarea name='AssessorEmail' id='PRTitle' style="width:800px;height:25px;">{{AssessorEmail}} </textarea>
+
+</table>
+
+<div class="control-group" style="margin-left:-25px">
+	<div class="controls">
+
+	  <button name="button" id='RegisterNewGroupInChargeName' class="btn btn-success" value='RegisterNewGroupInChargeName'  >RegisterNewGroupInChargeName</button><a href="{{ url_for('InChargeGroupIndex') }}"> Back to list</a>
+	</div>
+</div>
+</form>
+
+
+{% endblock %}
+
+
+

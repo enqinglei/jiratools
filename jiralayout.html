@@ -1,5 +1,5 @@
 <!doctype html>
-<title>LTE Formal RCA/EDA Status Tracking System -- Tracking MACPS RCA status </title>
+<title>MNRCA JIRA RCA/EDA Efficient Promotion WebApp</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
 <meta charset="utf-8">
@@ -12,10 +12,13 @@ body {
 <link href="/static/css/bootstrap.css" rel="stylesheet">
 <link href="/static/css/bootstrap-responsive.css" rel="stylesheet">
 <link href="/static/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="/static/css/select2.min.css" rel="stylesheet" />
+
 
 <script src="/static/js/jquery.js"></script>
 <script src="/static/js/bootstrap.js"></script>
 <script src="/static/js/echarts.min.js"></script>
+<script src="/static/js/select2.min.js"></script>
 
 <script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
 
@@ -28,28 +31,29 @@ body {
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-				<a class="brand" href="/">LTE RCA/EDA WebApp</a>
-
+				<a class="brand" style="display: inline-block;color:;">JIRA RCA/EDA WebApp</a>
 
 				<div class="nav-collapse collapse">
 					<ul class="nav">
 						<li class="active"><a href="/">Home</a></li>
+                        <!---
 						<li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>	
-						<li><a href="{{ url_for('syslog_view') }}">System Log</a></li>	
+						<li><a href="{{ url_for('syslog_view') }}">Syslog</a></li>	
+						--->
+                        <li><a href="/home">MNRCA Home</a></li>
+						<li><a href="/jiranew">Create 5WhyRCA Task</a></li>
+                        <li><a href="/InChargeGroupIndex">InChargeGroup</a></li>
 						{% if current_user.is_authenticated %}
-							<li><a href="/home">JIRA MNRCA RCA/EDA</a></li>
-							<!---<li><a href="/newap">New AP</a></li>--->
 							<li><a href="{{ url_for('logout') }}">Logout</a></li>
 						{% endif %}
 						{% if not current_user.is_authenticated%}
 							<li><a href="{{ url_for('login') }}">Login</a></li>
-							<li><a href="{{ url_for('register') }}">Register</a></li>
 						{% endif %}
 						
 					</ul>
 				</div>
 				<!--/.nav-collapse -->
-				<a class="brand" style="display: inline-block;height: 26px;text-align: right;color:yellow;">{{user}}</a> 
+				<a class="brand" style="display: inline-block;text-align: right;color:yellow;">{{user}}</a> 
 			</div>
 		</div>
 </div>

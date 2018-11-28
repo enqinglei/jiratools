@@ -1,0 +1,140 @@
+{% extends "jiralayout.html" %}
+{% block body %}
+  <form action="" method=post class="form-horizontal">
+    <h2>InChargeGroup Operation: 
+	<input name='button' class="btn btn-large btn-primary" value='Delete' type='SUBMIT'>
+	</h2>
+<table>
+<p>Use this form to Update InChargeGroupName or Delete:</p>
+<tr><td><font color="black"><b>InChargeGroupName:</td><td><textarea name='InChargeGroupName' style="width:800px;height:30px;">{{todo.InChargeGroupName}} </textarea></td></tr>
+<tr><td><font color="green"> <b>AssessorEmailName:</td><td><textarea name='AssessorEmail' style="width:800px;height:30px;">{{todo.AssessorEmail}} </textarea></td></tr>
+<tr><td><font color="green"> <b>AddedBy:</td><td><textarea name='AddedBy' style="width:800px;height:30px;">{{todo.AddedBy}} </textarea></td></tr>
+
+</table>
+
+<div class="control-group" style="margin-left:-31px">
+	<div class="controls">
+<!--	  <button type="submit" name="update" class="btn btn-success">Update</button>-->
+	  <input name='button' class="btn btn-success" value='Submit Change' type='SUBMIT'>
+<!---	  <input name='button' class="btn btn-success" value='CreatAnalysisSubtask' type='SUBMIT'> 
+	  <a href="{{url_for('importapfromexcel')}}" class="btn btn-success">Import from 5-Why Excel</a>
+	  <a href="{{url_for('update2JIRA')}}" class="btn btn-success">Update To JIRA</a>
+--->
+	  <a href="{{ url_for('InChargeGroupIndex') }}">Back to list</a>
+	</div>
+</div>
+</form>
+<script type="text/javascript">  
+
+$('#PRRcaCompleteDate').datetimepicker({  
+	 language:  '',  
+	   autoclose: 1,    
+		  weekStart: 1,    
+		  minView: 2,  
+		  todayBtn:1, 
+		 todayHighlight:1,  
+		keyboardNavigation:1,  
+		minuteStep:6,  
+	 initialDate: new Date(),  
+});
+
+function showSelect(){  
+   var _t = document.getElementById('t');  
+   var _s = document.getElementById('sel');  
+   if( _t.style.display == ''){  
+       _t.style.display = 'none';  
+   }  
+   else{  
+       _t.style.display = '';  
+    }  
+   if ( _s.style.display == 'none' ){  
+        _s.style.display = '';  
+    }  
+    else{  
+        _s.style.display = 'none';  
+    }  
+}  
+function showSelect1(){  
+   var _t1 = document.getElementById('t1');  
+   var _s1 = document.getElementById('sel1');  
+   if( _t1.style.display == ''){  
+       _t1.style.display = 'none';  
+   }  
+   else{  
+       _t1.style.display = '';  
+    }  
+   if ( _s1.style.display == 'none' ){  
+        _s1.style.display = '';  
+    }  
+    else{  
+        _s1.style.display = 'none';  
+    }  
+} 
+function showSelect2(){  
+   var _t2 = document.getElementById('t2');  
+   var _s2 = document.getElementById('sel2');  
+   if( _t2.style.display == ''){  
+       _t2.style.display = 'none';  
+   }  
+   else{  
+       _t2.style.display = '';  
+    }  
+   if ( _s2.style.display == 'none' ){  
+        _s2.style.display = '';  
+    }  
+    else{  
+        _s2.style.display = 'none';  
+    }  
+} 
+function showSelect3(){  
+   var _t3 = document.getElementById('t3');  
+   var _s3 = document.getElementById('sel3');  
+   if( _t3.style.display == ''){  
+       _t3.style.display = 'none';  
+   }  
+   else{  
+       _t3.style.display = '';  
+    }  
+   if ( _s3.style.display == 'none' ){  
+        _s3.style.display = '';  
+    }  
+    else{  
+        _s3.style.display = 'none';  
+    }  
+} 
+
+function showSelect4(){  
+   var _t4 = document.getElementById('t4');  
+   var _s4 = document.getElementById('sel4');  
+   if( _t4.style.display == ''){  
+       _t4.style.display = 'none';  
+   }  
+   else{  
+       _t4.style.display = '';  
+    }  
+   if ( _s4.style.display == 'none' ){  
+        _s4.style.display = '';  
+    }  
+    else{  
+        _s4.style.display = 'none';  
+    }  
+}
+function showSelect5(){  
+   var _t5 = document.getElementById('t5');  
+   var _s5 = document.getElementById('sel5');  
+   if( _t5.style.display == ''){  
+       _t5.style.display = 'none';  
+   }  
+   else{  
+       _t5.style.display = '';  
+    }  
+   if ( _s5.style.display == 'none' ){  
+        _s5.style.display = '';  
+    }  
+    else{  
+        _s5.style.display = 'none';  
+    }  
+}
+
+</script>  
+{% endblock %}

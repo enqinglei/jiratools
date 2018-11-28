@@ -1,0 +1,87 @@
+{% extends "jiralayout.html" %}
+{% block body %}
+<div style = "text-align:left;">	
+<div id="main" class="container">
+    <h2>{{headermessage}}: <b style="color:red;">{{count}}</b> 
+	
+	</h2> 
+    <table class="table table-hover">
+      <tr>
+		<th>JiraIssueId
+		<th>JiraIssueSummary
+        <th>JiraIssuePriority
+		<th>JiraIssueType
+		<th>JiraIssueCaseType
+		<th>JiraIssueStatus
+		<th>PRTitle
+		<th>JiraIssueAssignee
+        <th>JiraIssueReporter
+		<th>JiraIssueSourceList
+		<th>JiraIssueBusinessUnit
+		<th>JiraIssueBusinessLine
+		<th>JiraIssueProductLine
+		<th>JiraIssueCustomerName
+		<th>JiraIssueFeature
+        <th>JiraIssueFeatureComponent
+        <th>JiraIssueOther
+		<th>JiraIssueDetails
+
+		<th>JiraIssueLabels
+
+        <th>PRID
+        
+        <th>PRRcaEdaAssessor
+        <th>PRRelease
+        <th>PRAttached
+        <th>PRSeverity
+		<th>PRGroupInCharge
+		<th>PRProduct
+		<th>ReportedBy
+		<th>CustomerName
+		<th>FaultCoordinator		
+ 
+      {%- for todo in todos %}
+      <tr class={{ "success" if todo.done }}>
+        <td><a href="/jiratodos/{{todo.JiraIssueId}}">{{todo.JiraIssueId}}</a>
+		<td>{{todo.JiraIssueSummary}}		
+		<td>{{todo.JiraIssuePriority}} 
+		<td>{{todo.JiraIssueType}} 				
+		<td>{{todo.JiraIssueCaseType}} 			
+		<td>{{todo.JiraIssueStatus}}	
+		<td>{{todo.PRTitle}}
+		<td>{{todo.JiraIssueAssignee}} 			
+		<td>{{todo.JiraIssueReporter}} 
+		<td>{{todo.JiraIssueSourceList}} 		
+		<td>{{todo.JiraIssueBusinessUnit}} 		
+		<td>{{todo.JiraIssueBusinessLine}} 		
+		<td>{{todo.JiraIssueProductLine}} 		
+		<td>{{todo.JiraIssueCustomerName}} 		
+		<td>{{todo.JiraIssueFeature}} 			
+		<td>{{todo.JiraIssueFeatureComponent}}  
+		<td>{{todo.JiraIssueOther}} 
+		<td><a href="https://jiradc.int.net.nokia.com/browse/{{todo.JiraIssueId}}">{{ todo.JiraIssueId}} Details </a>		
+ 			
+		<td>{{todo.JiraIssueLabels}} 			
+
+		<td><a href="https://pronto.inside.nsn.com/pronto/problemReportSearch.html?freeTextdropDownID=prId&searchTopText={{todo.PRID }}&HomeFlag=true">{{ todo.PRID}}</a>								
+		 					
+		<td>{{todo.PRRcaEdaAssessor}} 			
+		<td>{{todo.PRRelease}} 					
+		<td>{{todo.PRAttached}} 				
+		<td>{{todo.PRSeverity}} 				
+        <td>{{todo.PRGroupInCharge}} 			
+        <td>{{todo.PRProduct}} 					
+		<td>{{todo.ReportedBy}} 
+		<td>{{todo.CustomerName}} 		
+        <td>{{todo.FaultCoordinator}} 				
+		
+
+      {%- endfor %}
+    </table>
+    <p>
+<div style = "text-align:left;"> <a href="{{ url_for('jiranew') }}" class="btn btn-large btn-primary">Create New JIRA RCA/EDA Task </a>
+<!---	  <a href="{{url_for('fromexcel')}}" class="btn btn-large btn-primary">Import from Excel</a> --->
+</div>
+  
+</div>
+{% endblock %}
