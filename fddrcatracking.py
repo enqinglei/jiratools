@@ -1059,11 +1059,18 @@ def insert_ap(internaltask_sheet,index,ApCategory):
             APDueDate = APDueDate
         #APDueDate=APDueDate.strftime('%Y-%d-%m')
         APID=get_apid()
-        QualityOwner=User.query.get(g.user.id).username #g.user.id
+        user,username = getUserAndUserName()
+        #QualityOwner=User.query.get(g.user.id).username #g.user.id
+        QualityOwner = username
         todoap = TodoAP(APID,PRID,APDescription,APCreatedDate,APDueDate,APCompletedOn,IsApCompleted,APAssingnedTo,QualityOwner,\
                         InjectionRootCauseEdaCause, RcaEdaCauseType, RcaEdaActionType, TargetRelease, CustomerAp, \
                         ApCategory,ShouldHaveBeenDetected,ApJiraId)
-        todoap.user = g.user
+        #todoap.user = g.user
+        global loginMode
+        if loginMode:
+            todoap.jirauser = g.user
+        else:
+            todoap.user = g.user
         db.session.add(todoap)
         db.session.commit()
 
@@ -1808,9 +1815,9 @@ def insert_ap_jira(internaltask_sheet,index,ApCategory):
 def update_rca_jira(PRID,internaltask_sheet,RcaSubtaskJiraId):
     todo_item = Todo.query.get(PRID)
     if todo_item is None:
-        flash('Please check the PR, seems it is not in the Formal RCA PR list!', 'error')
+        #flash('Please check the PR, seems it is not in the Formal RCA PR list!', 'error')
         jiratodo = JiraTodo.query.get(RcaSubtaskJiraId)
-        if jiratod:
+        if jiratodo: # Add Todo
             PRID = PRID
             PRTitle = jiratodo.PRTitle
             PRClosedDate = ''
@@ -1830,30 +1837,32 @@ def update_rca_jira(PRID,internaltask_sheet,RcaSubtaskJiraId):
             RootCause = ''
             IntroducedBy = ''
 
-            LteCategory = LteCategory
-            CustomerOrInternal = 'Yes'
+            LteCategory = ''
+            CustomerOrInternal = ''
             JiraFunctionArea = ''
             TriggerScenarioCategory = ''
             FirstFaultEcapePhase = ''
             FaultIntroducedRelease = ''
             TechnicalRootCause = ''
-            TeamAssessor = jiratodo.JiraIssueAssignee
+            TeamAssessor = jiratodo.JiraIssueAssignee # displayName in PR list, email name in AP list, different
             EdaCause = ''
             RcaRootCause5WhyAnalysis = ''
             JiraRcaBeReqested = 'Yes'
             JiraIssueStatus = jiratodo.JiraIssueStatus
-            JiraIssueAssignee = jiratodo.JiraIssueAssignee
+            JiraIssueAssignee = jiratodo.JiraIssueAssignee # displayName in PR list, email name in AP list, different
             JiraRcaPreparedQualityRating = 10
             JiraRcaDeliveryOnTimeRating = 10
             RcaSubtaskJiraId = RcaSubtaskJiraId
 
-            lineManagerEmail = getLineManagerEmailName(JiraIssueAssignee)
+            email,lineManagerEmail = getLineManagerEmailBydisplayName(JiraIssueAssignee)
+            JiraIssueAssignee = email
             if lineManagerEmail in addr_dict1.keys():
-                team = addr_dict1[lineManagerEmail]
+                Handler = addr_dict1[lineManagerEmail]
                 TeamAssessor = addr_dict[lineManagerEmail]['fc']
             else:
-                team = 'hanbing'
-                Handler = team
+                #team = lineManagerEmail
+                Handler = lineManagerEmail
+                TeamAssessor = email
             registered_user = Todo.query.filter_by(PRID=PRID).all()
             if len(registered_user) == 0:
                 todo = Todo(PRID, PRTitle, PRReportedDate, PRClosedDate, PROpenDays, PRRcaCompleteDate, PRRelease,
@@ -1870,14 +1879,21 @@ def update_rca_jira(PRID,internaltask_sheet,RcaSubtaskJiraId):
                 # g.user=Todo.query.get(team)
                 # todo.user = g.user
                 # print("todo.user = g.user=%s"%todo.user)
-                hello = User.query.filter_by(username=Handler).first()
-                todo.user_id = hello.id
-                print("todo.user_id=hello.user_id=%s" % hello.id)
+                # hello = User.query.filter_by(username=Handler).first()
+                # todo.user_id = hello.id
+                # print("todo.user_id=hello.user_id=%s" % hello.id)
+                global loginMode
+                if loginMode:
+                    todo.jirauser = g.user
+                else:
+                    todo.user = g.user
+
                 db.session.add(todo)
                 db.session.commit()
-            todo.user = g.user
-            db.session.add(todo)
-            db.session.commit()
+            # todo.user = g.user
+            # db.session.add(todo)
+            # db.session.commit()
+            todo_item = Todo.query.get(PRID)
         else:
             return False
     #todo_item.PRRcaCompleteDate = time.strftime('%Y-%m-%d',time.localtime(time.time()))
@@ -2320,6 +2336,100 @@ def update2JIRA():
         return redirect(url_for('show_or_update',PRID=gPRID))
     return render_template('ap_new.html')
 
+def UpdateToJira(PRID,RcaSubtaskJiraId):
+    jira = getJira(g.user.username, gSSOPWD)
+    RcaAanlysistaskIssue = jira.issue(RcaSubtaskJiraId)
+    Rca5WhyParentIssue = RcaAanlysistaskIssue.fields.parent
+    Rca5WhyTaskJiraKey = Rca5WhyParentIssue.key
+    filename = sharepointfile(PRID)
+    if filename != False:
+        import_ap_fromexcel_jira(filename,RcaSubtaskJiraId)
+    else:
+        flash('SharePoint Excel Error!!!!!')
+        return False
+    todos = TodoAP.query.filter_by(PRID = PRID, IsApCompleted='No').all()
+    for todo_item in todos:
+        ChildSubtaskType = JiraChildIssueType[todo_item.ApCategory]
+        if todo_item.ApCategory == 'RCA':
+            TitleSummary = 'RCA Action For ' + PRID
+        else:
+            TitleSummary = 'EDA Action For ' + PRID
+        ProposedActionDescription = todo_item.APDescription
+        TargetDate = todo_item.APDueDate
+        RootCause = todo_item.InjectionRootCauseEdaCause
+        JiraIssueAssignee = todo_item.APAssingnedTo
+        emailname = getAccountIdByEmailName(JiraIssueAssignee)
+        if todo_item.ApCategory == 'RCA':
+            CauseType = RcaCauseType[todo_item.RcaEdaCauseType]
+            issueaddforrca_action = {
+                'project': {'id': u'41675'},
+                'parent':{"key": Rca5WhyTaskJiraKey},
+                'issuetype': {'id': ChildSubtaskType},# Child subtask type
+                'summary': TitleSummary,
+                #'customfield_37543':{'id':'193986'},# Action Type conflict with excel
+                'customfield_37480':ProposedActionDescription,
+                'customfield_37070':TargetDate,# Target Date
+                #'customfield_38021':'TL18', # Target Release conflict with excel
+                'customfield_37755':RootCause,#InjectionRootCauseEdaCause
+                'customfield_38019':CauseType,# RCA Cause Type,conflict with excel
+                'assignee':{'name':emailname}
+            }
+            #newissue = jira.create_issue(issueaddforrca_action)
+            if todo_item.ApJiraId == '':
+                newissue = jira.create_issue(issueaddforrca_action)
+            else:
+                JiraIssueId = todo_item.ApJiraId
+                newissue = jira.issue(JiraIssueId)
+                newissue.update(issueaddforrca_action)
+        elif todo_item.ApCategory == 'EDA':
+            CauseType = EdaCauseType[todo_item.RcaEdaCauseType]
+            issueaddforrca_action = {
+                'project': {'id': u'41675'},
+                'parent':{"key": Rca5WhyTaskJiraKey},
+                'issuetype': {'id': ChildSubtaskType},# Child subtask type
+                'summary': TitleSummary,
+                #'customfield_37543':{'id':'193986'},# Action Type conflict with excel
+                'customfield_37472':ProposedActionDescription,
+                'customfield_37058':TargetDate,# Target Date
+                #'customfield_38021':'TL18', # Target Release conflict with excel
+                'customfield_37470':RootCause,#InjectionRootCauseEdaCause
+                'customfield_38091':CauseType,# RCA Cause Type,conflict with excel
+                'assignee':{'name':emailname}
+            }
+            if todo_item.ApJiraId == '':
+                newissue = jira.create_issue(issueaddforrca_action)
+            else:
+                JiraIssueId = todo_item.ApJiraId
+                newissue = jira.issue(JiraIssueId)
+                newissue.update(issueaddforrca_action)
+
+        JiraIssueId = str(newissue.key)
+        APID = todo_item.APID
+        todo_item = TodoAP.query.get(APID)
+        todo_item.ApJiraId = JiraIssueId
+        todo_item.APAssingnedTo = JiraIssueAssignee
+        db.session.commit()
+
+    todo_item = Todo.query.get(PRID)
+    TriggeringType = TriggeringCategory[todo_item.TriggerScenarioCategory]
+    Rca5Why_issues[0].update(customfield_39290={'id': TriggeringType})
+    global shouldhavebeenfound
+    if shouldhavebeenfound: # Should have been found update
+        dict1 = {'customfield_37199': shouldhavebeenfound}
+        Rca5Why_issues[0].update(dict1)
+        shouldhavebeenfound = []
+    status = RcaAnalysis_issues[0].fields.status
+    print status
+    if status != 'Closed':
+        jira.transition_issue(RcaAnalysis_issues[0], JIRA_STATUS['Resolved'])
+    status = RcaAnalysis_issues[0].fields.status
+    todo_item.PRRcaCompleteDate = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    todo_item.JiraIssueStatus = status
+    todo_item.IsRcaCompleted = 'Yes'
+    db.session.commit()
+    flash('AP item have been successfully imported RCA status also has been updated!')
+    return True
+
 @app.route('/toexcel',methods=['GET', 'POST'])
 @login_required
 def toexcel():
@@ -2610,7 +2720,43 @@ def getUserAndUserName():
             if lineManagerEmail in addr_dict1.keys():
                 username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
             else:
-                username = JiraUser.query.get(g.user.id).email
+                username = lineManagerEmail #JiraUser.query.get(g.user.id).email
+        user = JiraUser.query.get(g.user.id).displayName
+    else:
+        username = g.user.username
+        user = username
+    return user,username
+
+def getUserAndUserNameLineName():
+    global loginMode
+    print loginMode
+    if loginMode:
+        if g.user.username == 'qmxh38':
+            username = 'leienqing'
+        else:
+            lineManagerEmail = JiraUser.query.get(g.user.id).lineManagerEmail
+            if lineManagerEmail in addr_dict1.keys():
+                username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
+            else:
+                username = lineManagerEmail #JiraUser.query.get(g.user.id).email
+        user = JiraUser.query.get(g.user.id).displayName
+    else:
+        username = g.user.username
+        user = username
+    return user,username
+
+def getUserAndUserNameForInChargeGroup():
+    global loginMode
+    print loginMode
+    if loginMode:
+        # if g.user.username == 'qmxh38':
+        #     username = 'leienqing'
+        # else:
+        #     lineManagerEmail = JiraUser.query.get(g.user.id).lineManagerEmail
+        #     if lineManagerEmail in addr_dict1.keys():
+        #         username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
+        #     else:
+        username = JiraUser.query.get(g.user.id).email
         user = JiraUser.query.get(g.user.id).displayName
     else:
         username = g.user.username
@@ -2620,50 +2766,11 @@ def getUserAndUserName():
 @app.route('/ap_home',methods=['GET','POST'])
 @login_required
 def ap_home():
-    # global loginMode
-    # print loginMode
-    # if loginMode:
-    #     if g.user.username == 'qmxh38':
-    #         username = 'leienqing'
-    #     else:
-    #         lineManagerEmail = JiraUser.query.get(g.user.id).lineManagerEmail
-    #         if lineManagerEmail in addr_dict1.keys():
-    #             username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
-    #         else:
-    #             username = JiraUser.query.get(g.user.id).email
-    #     user = JiraUser.query.get(g.user.id).displayName
-    # else:
-    #     username = g.user.username
-    #     user = username
     user,username = getUserAndUserName()
     if request.method == 'GET':
-        # if username in admin:
         count = TodoAP.query.order_by(TodoAP.APID.asc()).count()
-        todos = TodoAP.query.order_by(TodoAP.APID.asc()).all()
+        todos = TodoAP.query.order_by(TodoAP.APID.desc()).all()
         return render_template('ap_index.html',count = count,user = user,todos = todos)
-    #     elif username in teams:
-    #         PRID= TodoAP.PRID
-    #         username = g.user.username
-    #         filename = PRID+'.xlsm'
-    #         count=TodoAP.query.filter_by(QualityOwner=username).order_by(TodoAP.APID.asc()).count()
-    #         #gEvidenceFileName = "http://n-5cg5010gn7.nsn-intra.net:5001/" + 'apupload' + '/'+ username + '/' + fname
-    #         return render_template('ap_index.html',count=count,user = user,
-    #                                todos=TodoAP.query.filter_by(QualityOwner=username).order_by(TodoAP.APID.asc()).all())
-    #     else:
-    #         hello = User.query.filter_by(username=username).first()
-    #         if hello:
-    #             normaluser = hello.email
-    #             count = TodoAP.query.filter_by(APAssingnedTo=normaluser).order_by(TodoAP.APID.asc()).count()
-    #             return render_template('ap_index.html', count=count,user = user,
-    #                                    todos=TodoAP.query.filter_by(APAssingnedTo=normaluser).order_by(
-    #                                        TodoAP.APID.asc()).all())
-    #
-    # else:
-    #     output=Excel().export()
-    #     resp = make_response(output.getvalue())
-    #     resp.headers["Content-Disposition"] ="attachment; filename=ap_list.xls"
-    #     resp.headers['Content-Type'] = 'application/x-xlsx'
-    #     return resp
 
 
 @app.route('/longcycletimercaindex',methods=['GET','POST'])
@@ -2873,35 +2980,30 @@ def show_or_update(PRID):
                       todo_item.RootCauseCategory,todo_item.FunctionArea,todo_item.IntroducedBy,todo_item.Handler,\
                       todo_item.TeamAssessor,todo_item.JiraIssueAssignee,'','','','')
         #log_request2(get_login_info())
-        if todo_item.Handler == username or username in admin:
-            print ("todo_item.user_id=%d"%todo_item.user_id)
-            print ("g.user.id=%d"%g.user.id)
-            print "before"
-            return render_template('view.html',todo=todo_item,user = user)
-        else:
-            print "after"
-            print ("todo_item.user_id=%d"%todo_item.user_id)
-            print ("g.user.id=%d"%g.user.id)
-            flash('This PR is not under your account,You are not authorized to edit this item, Please login with correct account', 'error')
-            return redirect(url_for('logout'))
+        #if todo_item.Handler == username or username in admin:
+        print ("todo_item.user_id=%d"%todo_item.user_id)
+        print ("g.user.id=%d"%g.user.id)
+        print "before"
+        return render_template('view.html',todo=todo_item,user = user)
+        # else:
+        #     print "after"
+        #     print ("todo_item.user_id=%d"%todo_item.user_id)
+        #     print ("g.user.id=%d"%g.user.id)
+        #     flash('This PR is not under your account,You are not authorized to edit this item, Please login with correct account', 'error')
+        #     return redirect(url_for('logout'))
     elif request.method == 'POST':
         value = request.form['button']
         if value == 'Update':
             #if g.user.username in admin:
-            if todo_item.user.id == g.user.id or g.user.username in admin:
+            if todo_item.Handler == username or username in admin:#todo_item.user.id == g.user.id or g.user.username in admin:
                 todo_item.PRID = request.form['PRID'].strip()
                 PRID=todo_item.PRID
                 todo_item.PRTitle = request.form['PRTitle']
-
                 todo_item.PRClosedDate  = request.form['PRClosedDate']
-
                 todo_item.PRReportedDate = request.form['PRReportedDate']
-
                 PRReportedDate= request.form['PRReportedDate']
                 PRClosedDate= request.form['PRClosedDate']
-
                 todo_item.PROpenDays = daysBetweenDate(PRReportedDate,PRClosedDate)
-
                 todo_item.PRRcaCompleteDate = request.form['PRRcaCompleteDate']
                 if todo_item.PROpenDays > 14:
                     IsLongCycleTime = 'Yes'
@@ -2918,7 +3020,7 @@ def show_or_update(PRID):
                 todo_item.RootCause = request.form['RootCause']
                 todo_item.IntroducedBy  = request.form['IntroducedBy']
                 #todo_item.Handler  = request.form['Handler']
-                team=request.form['Handler']
+                team = request.form['Handler']
                 print("team=%s"%team)
                 if todo_item.JiraRcaBeReqested == 'Yes' and todo_item.Handler != team:
                     todo_item.Handler = team
@@ -2960,7 +3062,7 @@ def show_or_update(PRID):
                 else:
                     todo_item.TeamAssessor = addr_dict[team]['fc']
                     #TeamAssessor = addr_dict[team]['fc']
-                todo_item.user_id=hello.id
+                todo_item.user_id = hello.id
                 db.session.commit()
                 syslog_record(g.user.username, value, todo_item.PRID, todo_item.IsCatM, todo_item.IsRcaCompleted, \
                               todo_item.RootCauseCategory, todo_item.FunctionArea, todo_item.IntroducedBy,
@@ -2972,6 +3074,14 @@ def show_or_update(PRID):
             else:
                 flash('You are not authorized to edit this item','error')
                 return redirect(url_for('show_or_update',PRID=PRID,user = user))
+        elif value == 'UpdateToJira':
+            if todo_item.Handler == username or username in admin:
+                todo_item = Todo.query.get(PRID)
+                JiraIssueId = todo_item.RcaSubtaskJiraId
+                UpdateToJira(PRID,JiraIssueId)
+            else:
+                flash('You are not authorized to edit this item', 'error')
+            return redirect(url_for('show_or_update', PRID=PRID, user=user))
         elif value == 'Delete'and username in admin:
             todo_item = Todo.query.get(PRID)
             syslog_record(g.user.username, value, todo_item.PRID, todo_item.IsCatM, todo_item.IsRcaCompleted, \
@@ -3142,23 +3252,11 @@ def show_or_updateap(APID):
     user,username = getUserAndUserName()
     todo_item = TodoAP.query.get(APID)
     if request.method == 'GET':
-        # if todo_item.user_id == g.user.id or g.user.username in admin:
-        #     print ("todo_item.user_id=%d"%todo_item.user_id)
-        #     print ("g.user.id=%d"%g.user.id)
-        #     print "before"
         return render_template('ap_view.html', todo=todo_item,user = user)
-        # else:
-        #     print "after"
-        #     print ("todo_item.user_id=%d"%todo_item.user_id)
-        #     print ("g.user.id=%d"%g.user.id)
-        #     flash('This AP is not under your account,You are not authorized to edit this item, Please login with correct account', 'error')
-        #     return redirect(url_for('logout'))
-        #return render_template('ap_view.html',todo=todo_item)
+
     elif request.method == 'POST':
         value = request.form['button']
         if value == 'Update':
-            #if g.user.username in admin:
-            #if todo_item.user.id == g.user.id or g.user.username in admin:
             if todo_item.QualityOwner == username or username in admin:
                 todo_item = TodoAP.query.get(APID)
                 todo_item.PRID = request.form['PRID'].strip()
@@ -3178,14 +3276,17 @@ def show_or_updateap(APID):
             else:
                 flash('You are not authorized to edit this item','error')
                 return redirect(url_for('show_or_updateap',APID=APID,user = user))
-        elif value == 'Delete' and username in admin:
-            todo_item = TodoAP.query.get(APID)
-            db.session.delete(todo_item)
-            db.session.commit()
+        elif value == 'Delete':
+            if username in admin:
+                todo_item = TodoAP.query.get(APID)
+                db.session.delete(todo_item)
+                db.session.commit()
+                flash('Delete successfully.')
+            else:
+                flash('You are not authorized to Delete this item', 'error')
+                return redirect(url_for('show_or_updateap', APID=APID, user=user))
             return redirect(url_for('apindex'))
-        flash('You are not authorized to Delete this item', 'error')
-    #flash('You are not authorized to edit this todo item','error')
-    return redirect(url_for('show_or_updateap',APID=APID))
+
 
 
 @app.route('/register' , methods=['GET','POST'])
@@ -3382,11 +3483,25 @@ def jirahome():
 def jiraindex():
     return redirect(url_for('jirarca_home'))
 
+@app.route('/loadAssigneeInfo1', methods=['GET', 'POST'])
+@login_required
+def loadAssigneeInfo1():
+    if request.method == 'POST':
+        InChargeGroupName = request.form['GroupInCharge'].strip()
+        user = InChargeGroup.query.filter_by(InChargeGroupName = InChargeGroupName).first()
+        if user:
+            AssessorEmail = user.AssessorEmail
+        else:
+            AssessorEmail = ''
+        return jsonify(AssignTo = AssessorEmail)
+
 @app.route('/loadAssigneeInfo', methods=['GET', 'POST'])
 @login_required
 def loadAssigneeInfo():
     if request.method == 'POST':
         AssignTo = request.form['AssignTo'].strip()
+        if not AssignTo:
+            return jsonify(AssignTo=AssignTo)
         user = JiraUser.query.filter_by(email = AssignTo).first()
         if user:
             AssignTo = user.displayName
@@ -3396,7 +3511,7 @@ def loadAssigneeInfo():
             except:
                 return redirect(url_for('login'))
             filter = '(mail=%s)'%AssignTo
-            attrs = ['sn', 'mail', 'cn', 'displayName', 'nsnManagerAccountName']
+            attrs = ['sn', 'mail', 'uid', 'displayName', 'nsnManagerAccountName']
             base_dn = 'o=NSN'
             #conn = app.config['ldap']
             try:
@@ -3405,6 +3520,7 @@ def loadAssigneeInfo():
                 return redirect(url_for('logout'))
             AssignTo = result[0][1]['displayName'][0]
             email = result[0][1]['mail'][0]
+            username = result[0][1]['uid'][0]
             displayName = result[0][1]['displayName'][0]
             lineManagerAccountId = result[0][1]['nsnManagerAccountName'][0]
             # user = JiraUser.query.filter_by(username=username).first()
@@ -3448,11 +3564,38 @@ def loadProntoInfo():
             flash(' %s -- Invalid PRID has been input!'%PRID, 'error')
             return render_template('jira_new.html', PRID=PRID)
         a = r.json()
+        InChargeGroupName = a['groupIncharge'].strip()
+        user = InChargeGroup.query.filter_by(InChargeGroupName = InChargeGroupName).first()
+        if user:
+            AssessorEmail = user.AssessorEmail
+            user = JiraUser.query.filter_by(email=AssessorEmail).first()
+            if user:
+                displayName = user.displayName
+            else:
+                try:
+                    conn = get_ldap_connection()
+                except:
+                    return redirect(url_for('login'))
+                filter = '(mail=%s)' % AssessorEmail
+                attrs = ['uid', 'displayName']
+                base_dn = 'o=NSN'
+                try:
+                    result = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
+                except:
+                    return redirect(url_for('logout'))
+                displayName = result[0][1]['displayName'][0]
+        else:
+            AssessorEmail = ''
+            displayName = ''
+
+        a['AssessorEmail'] = AssessorEmail
+        a['displayName'] = displayName
+        #b = a.json()
         return jsonify(a)
 
 def getAccountIdByEmailName(JiraIssueAssignee):
-    AssignTo = JiraIssueAssignee
-    user = JiraUser.query.filter_by(email=AssignTo).first()
+    #AssignTo = JiraIssueAssignee
+    user = JiraUser.query.filter_by(email=JiraIssueAssignee).first()
     if user:
         AssignTo = user.username
     else:
@@ -3460,10 +3603,9 @@ def getAccountIdByEmailName(JiraIssueAssignee):
             conn = get_ldap_connection()
         except:
             return redirect(url_for('login'))
-        filter = '(mail=%s)' % AssignTo
+        filter = '(mail=%s)' % JiraIssueAssignee
         attrs = ['sn', 'mail', 'cn', 'displayName', 'uid']
         base_dn = 'o=NSN'
-        # conn = app.config['ldap']
         try:
             result = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
         except:
@@ -3472,9 +3614,7 @@ def getAccountIdByEmailName(JiraIssueAssignee):
             return AssignTo
         AssignTo = result[0][1]['uid'][0]
     return AssignTo
-        # email = result[0][1]['mail'][0]
-        # displayName = result[0][1]['displayName'][0]
-        # lineManagerAccountId = result[0][1]['nsnManagerAccountName'][0]
+
 
 def getLineManagerEmailName(JiraIssueAssignee):
     AssignTo = JiraIssueAssignee
@@ -3506,6 +3646,41 @@ def getLineManagerEmailName(JiraIssueAssignee):
         lineManagerEmail = lineResult[0][1]['mail'][0]
 
     return lineManagerEmail
+
+def getLineManagerEmailBydisplayName(JiraIssueAssignee):
+    #AssignTo = JiraIssueAssignee
+    user = JiraUser.query.filter_by(displayName=JiraIssueAssignee).first()
+    if user:
+        lineManagerEmail = user.lineManagerEmail
+        email = user.email
+    else:
+        try:
+            conn = get_ldap_connection()
+        except:
+            #return redirect(url_for('login'))
+            flash('getLineManagerEmailBydisplayName failure','error')
+            return JiraIssueAssignee
+        filter = '(displayName=%s)' % JiraIssueAssignee
+        attrs = ['sn', 'mail', 'cn', 'displayName', 'nsnManagerAccountName']
+        base_dn = 'o=NSN'
+        try:
+            result = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
+        except:
+            print 'No such account!!!'
+            # AssignTo =''
+            flash('getLineManagerEmailBydisplayName failure', 'error')
+            return JiraIssueAssignee,JiraIssueAssignee
+        # AssignTo = result[0][1]['uid'][0]
+        lineManagerAccountId = result[0][1]['nsnManagerAccountName'][0]
+        email = result[0][1]['mail'][0]
+        filter = '(uid=%s)'%lineManagerAccountId
+        attrs = ['sn', 'mail', 'cn', 'displayName', 'nsnManagerAccountName']
+        base_dn = 'o=NSN'
+        lineResult = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
+        # lineManagerDisplayName = lineResult[0][1]['displayName'][0]
+        lineManagerEmail = lineResult[0][1]['mail'][0]
+
+    return email,lineManagerEmail
 
 def createParent5WhyRcaTaskFirst(jira,PRID,request,JiraIssueAssignee):
     url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
@@ -3919,8 +4094,10 @@ def jiranew():
 @app.route('/InChargeGroupRegisterNew', methods=['GET', 'POST'])
 @login_required
 def InChargeGroupRegisterNew():
-    user,username = getUserAndUserName()
-    if request.method == 'POST':
+    user,username = getUserAndUserNameForInChargeGroup()
+    if request.method == 'GET':
+        return render_template('inchargegroup_new.html', user=user)
+    else: #request.method == 'POST'
         value = request.form['button']
         if value == 'RegisterNewGroupInChargeName':
             if not request.form['InChargeGroupName']:
@@ -3928,99 +4105,70 @@ def InChargeGroupRegisterNew():
                 return render_template('inchargegroup_new.html', user=user)
             InChargeGroupName = request.form['InChargeGroupName'].strip()
             AssessorEmail = request.form['AssessorEmail'].strip()
-            AddedBy = user
-            inchargegroup = InChargeGroup(InChargeGroupName,AssessorEmail,AddedBy)
+            AddedBy = username
+            inchargegroup = InChargeGroup(InChargeGroupName, AssessorEmail, AddedBy)
             global loginMode
             if loginMode:
                 inchargegroup.jirauser = g.user
             else:
                 inchargegroup.user = g.user
-
-            db.session.add(inchargegroup)
-            db.session.commit()
+            try:
+                db.session.add(inchargegroup)
+                db.session.commit()
+            except:
+                # pass
+                flash('%s, Has already been added by other person, Duplicate addition!' % InChargeGroupName, 'error')
+                #return render_template('inchargegroup_new.html', user=user)
+                #return render_template('inchargegroup_new.html', user=user)
+                #return redirect(url_for('InChargeGroupRegisterNew'))
+                return redirect(url_for('InChargeGroupIndex'))
             flash('InChargeGroup item was successfully created')
-
             return redirect(url_for('InChargeGroupIndex'))
-    else: #request.method == 'POST'
-        return render_template('inchargegroup_new.html',user = JiraUser.query.get(g.user.id).displayName)
 
 @app.route('/InChargeGroupIndex', methods=['GET', 'POST'])
 @login_required
 def InChargeGroupIndex():
-    user,username = getUserAndUserName()
+    user,username = getUserAndUserNameForInChargeGroup()
     if request.method == 'GET':
         count = InChargeGroup.query.count()
         todos = InChargeGroup.query.all()
-        headermessage = 'All MNRCA JIRA RCA/EDA Reported By Me'
         return render_template('inchargegroup_index.html',count = count,todos = todos, user=user)
-
-    else: # request.method == 'GET'
-        value = request.form['button']
-        if value == 'CreateAndAssignBtn':
-            if not request.form['PRID']:
-                flash('PRID is required', 'error')
-                return render_template('jiranew.html', user=JiraUser.query.get(g.user.id).displayName)
-            PRID = request.form['PRID'].strip()
-            RCAEDAType = request.form['RCAEDAType'].strip()
-            jira = getJira(g.user.username, gSSOPWD)
-            JiraIssueAssignee = request.form['AssignTo'].strip()
-            JiraIssueAssignee = getAccountIdByEmailName(JiraIssueAssignee)
-            if RCAEDAType == '5WhyRCA':
-                create5WhyRcaTask(jira, PRID, request, JiraIssueAssignee)
-            elif RCAEDAType == 'Analysis subtask':
-                if not request.form['CaseType']:
-                    flash('CaseType for Analysis subtask is required', 'error')
-                    return render_template('jiranew.html', user=JiraUser.query.get(g.user.id).displayName)
-                CaseType = request.form['CaseType']
-                newissue, result = createAnalysisSubtask(jira, PRID, CaseType, JiraIssueAssignee)
-                if newissue:
-                    flash('Analysis subtask has been created!!!')
-                else:
-                    flash('Analysis subtask created failure,%s' % result, 'error')
-                    return render_template('jiranew.html', user=JiraUser.query.get(g.user.id).displayName)
-            return redirect(url_for('jiraindex'))
 
 
 @app.route('/inchargegroups/<InChargeGroupName>', methods = ['GET' , 'POST'])
 @login_required
 def show_or_updateInChargeGroup(InChargeGroupName):
-    user,username = getUserAndUserName()
+    user,username = getUserAndUserNameForInChargeGroup()
     todo_item = InChargeGroup.query.get(InChargeGroupName)
     if request.method == 'GET':
         return render_template('inchargegroup_view.html', todo=todo_item,user = user)
-    
-    elif request.method == 'POST':
+    else: #request.method == 'POST':
         value = request.form['button']
-        if value == 'Update':
-            #if g.user.username in admin:
-            #if todo_item.user.id == g.user.id or g.user.username in admin:
-            if todo_item.QualityOwner == username or username in admin:
-                todo_item = TodoAP.query.get(APID)
-                todo_item.PRID = request.form['PRID'].strip()
-                todo_item.APDescription  = request.form['APDescription']
-                #todo_item.ApJiraId = request.form['ApJiraId']
-                todo_item.APCreatedDate = request.form['APCreatedDate']
-                todo_item.APDueDate = request.form['APDueDate']
-                todo_item.APCompletedOn  = request.form['APCompletedOn']
-                todo_item.IsApCompleted = request.form['IsApCompleted']
-                todo_item.APAssingnedTo  = request.form['APAssingnedTo']
-                todo_item.QualityOwner  = request.form['QualityOwner']
-                team = request.form['QualityOwner']
-                hello = User.query.filter_by(username=team).first()
-                todo_item.user_id = hello.id
+        if value == 'Submit Change':
+            if todo_item.AddedBy == username or username in admin:
+                todo_item = InChargeGroup.query.get(InChargeGroupName)
+                todo_item.InChargeGroupName = request.form['InChargeGroupName'].strip()
+                todo_item.AssessorEmail = request.form['AssessorEmail'].strip()
+                todo_item.AddedBy = request.form['AddedBy']
+                # hello = User.query.filter_by(username=team).first()
+                # todo_item.user_id = hello.id
                 db.session.commit()
-                return redirect(url_for('apindex'))
+                return redirect(url_for('InChargeGroupIndex'))
             else:
                 flash('You are not authorized to edit this item','error')
-                return redirect(url_for('show_or_updateap',APID=APID,user = user))
-        elif value == 'Delete' and username in admin:
-            todo_item = TodoAP.query.get(APID)
-            db.session.delete(todo_item)
-            db.session.commit()
-            return redirect(url_for('apindex'))
-        flash('You are not authorized to Delete this item', 'error')
-    #flash('You are not authorized to edit this todo item','error')
-    return redirect(url_for('show_or_updateap',APID=APID))
+                return redirect(url_for('show_or_updateInChargeGroup',\
+                                        InChargeGroupName=InChargeGroupName,user = user))
+        elif value == 'Delete':
+            if todo_item.AddedBy == username or username in admin:
+                todo_item = InChargeGroup.query.get(InChargeGroupName)
+                db.session.delete(todo_item)
+                db.session.commit()
+                return redirect(url_for('InChargeGroupIndex', user=user))
+            else:
+                flash('You are not authorized to delete this item','error')
+                return redirect(url_for('show_or_updateshow_or_updateInChargeGroup',\
+                                        InChargeGroupName=InChargeGroupName,user = user))
+
 
 @app.route('/importinchargegroupfromexcel', methods = ['GET' , 'POST'])
 @login_required
@@ -4327,8 +4475,6 @@ def index_by_reporter():
 @app.route('/jiratodos/<JiraIssueId>', methods = ['GET' , 'POST'])
 @login_required
 def jirashow_or_update(JiraIssueId):
-    # global gPRID
-    # gPRID = PRID
     todo_item = JiraTodo.query.get(JiraIssueId)
     if request.method == 'GET':
         if todo_item.JiraIssueType in ('Analysis subtask'):
@@ -4338,14 +4484,14 @@ def jirashow_or_update(JiraIssueId):
         elif todo_item.JiraIssueType in ('Action for RCA','Action for EDA'):
             return render_template('close_ap_view.html', todo=todo_item)
         else:
-            flash('You are not authorized to edit this item', 'error')
+            flash('No Such JiraIssueType', 'error')
             return redirect(url_for('jiraindex'))
 
     else: # request.method == 'POST':
         value = request.form['button']
         if value == 'CreatAnalysisSubtask':
-            flash('You are not authorized to edit this item','error')
-            return render_template('new.html', user=JiraUser.query.get(g.user.id).displayName)
+            #flash('You are not authorized to edit this item','error')
+            return render_template('jiranew.html', user=JiraUser.query.get(g.user.id).displayName)
         elif value == 'CreateActionSubtaskFrom5WhyRcaExcel':
             jira = getJira(g.user.username,gSSOPWD)
             RcaSubtaskJiraKey = JiraIssueId
