@@ -3,7 +3,8 @@
 import sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
-from datetime import datetime
+#from datetime import datetime
+import datetime
 from flask import Flask,session, request, flash, url_for, redirect, render_template, abort ,g,send_from_directory,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
@@ -1812,6 +1813,77 @@ def insert_ap_jira(internaltask_sheet,index,ApCategory):
         shouldhavebeenfound.append(FaultShouldHaveBeenFound[ShouldHaveBeenDetected])
 
 
+def addTodo(PRID,RcaSubtaskJiraId,JiraIssueAssignee):
+    todo_item = Todo.query.get(PRID)
+    if todo_item is None:
+        jiratodo = JiraTodo.query.get(RcaSubtaskJiraId)
+        if jiratodo: # Add Todo
+            PRID = PRID
+            PRTitle = jiratodo.PRTitle
+            PRClosedDate = ''
+            PRReportedDate = ''
+            PROpenDays = 0
+            PRRcaCompleteDate = ''
+            PRRelease = jiratodo.PRRelease
+            PRAttached = jiratodo.PRAttached
+            IsCatM = ''
+            IsRcaCompleted = 'No'
+            IsLongCycleTime = ''
+            NoNeedDoRCAReason = ''
+            RootCauseCategory = ''
+            FunctionArea = ''
+            CodeDeficiencyDescription = ''
+            CorrectionDescription = ''
+            RootCause = ''
+            IntroducedBy = ''
+
+            LteCategory = ''
+            CustomerOrInternal = ''
+            JiraFunctionArea = ''
+            TriggerScenarioCategory = ''
+            FirstFaultEcapePhase = ''
+            FaultIntroducedRelease = ''
+            TechnicalRootCause = ''
+            TeamAssessor = JiraIssueAssignee
+            EdaCause = ''
+            RcaRootCause5WhyAnalysis = ''
+            JiraRcaBeReqested = 'Yes'
+            JiraIssueStatus = jiratodo.JiraIssueStatus
+            JiraIssueAssignee = JiraIssueAssignee
+            JiraRcaPreparedQualityRating = 10
+            JiraRcaDeliveryOnTimeRating = 10
+            RcaSubtaskJiraId = RcaSubtaskJiraId
+
+            #email,lineManagerEmail = getLineManagerEmailBydisplayName(JiraIssueAssignee)
+            #JiraIssueAssignee = email
+            lineManagerEmail = getLineManagerEmailName(JiraIssueAssignee)
+            if lineManagerEmail in addr_dict1.keys():
+                Handler = addr_dict1[lineManagerEmail]
+                TeamAssessor = addr_dict[lineManagerEmail]['fc']
+            else:
+                Handler = lineManagerEmail
+                TeamAssessor = email
+            registered_user = Todo.query.filter_by(PRID=PRID).all()
+            if len(registered_user) == 0:
+                todo = Todo(PRID, PRTitle, PRReportedDate, PRClosedDate, PROpenDays, PRRcaCompleteDate, PRRelease,
+                            PRAttached, IsLongCycleTime, \
+                            IsCatM, IsRcaCompleted, NoNeedDoRCAReason, RootCauseCategory, FunctionArea,
+                            CodeDeficiencyDescription, \
+                            CorrectionDescription, RootCause, IntroducedBy, Handler, LteCategory, CustomerOrInternal,
+                            JiraFunctionArea, TriggerScenarioCategory, \
+                            FirstFaultEcapePhase, FaultIntroducedRelease, TechnicalRootCause, TeamAssessor, EdaCause,
+                            RcaRootCause5WhyAnalysis, \
+                            JiraRcaBeReqested, JiraIssueStatus, JiraIssueAssignee, JiraRcaPreparedQualityRating,
+                            JiraRcaDeliveryOnTimeRating, \
+                            RcaSubtaskJiraId)
+                global loginMode
+                if loginMode:
+                    todo.jirauser = g.user
+                else:
+                    todo.user = g.user
+                db.session.add(todo)
+                db.session.commit()
+
 def update_rca_jira(PRID,internaltask_sheet,RcaSubtaskJiraId):
     todo_item = Todo.query.get(PRID)
     if todo_item is None:
@@ -2462,10 +2534,9 @@ def home1():
     global loginMode
     print loginMode
     if request.method=='GET':
-        if loginMode:
-            user = JiraUser.query.get(g.user.id).displayName
-        else:
-            user = g.user.username
+        # username = request.cookies.get('username')
+        # flash('Cookie %s'%username)
+        user,username = getUserAndUserName()
         return render_template('home.html',user = user)
     else:
         return redirect(url_for('rca_home'))
@@ -2484,22 +2555,12 @@ admin=['leienqing',]
 @app.route('/rca_home',methods=['GET','POST'])
 @login_required
 def rca_home():
-    # global loginMode
-    # print loginMode
-    # if loginMode:
-    #     if g.user.username == 'qmxh38':
-    #         username = 'leienqing'
-    #     else:
-    #         username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
-    #     user = JiraUser.query.get(g.user.id).displayName
-    # else:
-    #     username = g.user.username
-    #     user = username
     user, username = getUserAndUserName()
     if request.method=='GET':
         if username in admin:
             count = Todo.query.order_by(Todo.PRClosedDate.asc()).count()
-            headermessage = 'All RCA Items'
+            headermessage = 'All RCA \
+            Items count = %s'%count
             return render_template('index.html',count= count,headermessage = headermessage,
                                    todos=Todo.query.order_by(Todo.PRClosedDate.asc()).all(), \
                                    user=user)
@@ -2718,7 +2779,7 @@ def getUserAndUserName():
         else:
             lineManagerEmail = JiraUser.query.get(g.user.id).lineManagerEmail
             if lineManagerEmail in addr_dict1.keys():
-                username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
+                username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail].strip()
             else:
                 username = lineManagerEmail #JiraUser.query.get(g.user.id).email
         user = JiraUser.query.get(g.user.id).displayName
@@ -3150,8 +3211,8 @@ def show_or_updatelongcycletimerca(PRID):
        
         todo_item.Handler  = request.form['Handler']
         team=request.form['Handler']
-	hello = User.query.filter_by(username=team).first()
-	todo_item.user_id=hello.id
+        hello = User.query.filter_by(username=team).first()
+        todo_item.user_id=hello.id
 
         db.session.commit()
 
@@ -3209,13 +3270,16 @@ def uploadevidence():
         return render_template('uploadevidence.html')
     else:
         global gAPID
+        global gSSOPWD
         file_dir = os.path.join(basedir, 'evidence')
         file_dir = os.path.join(file_dir, gAPID)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
         f = request.files['fileField']
         #if f and allowed_file(f.filename):
-        fname = f.filename
+        fname = f.filename.replace(' ','_')
+        fname =fname.strip()
+        #fname = f.filename
         filename = os.path.join(file_dir, fname)
         f.save(filename)
         gEvidenceFileName = filename
@@ -3226,9 +3290,82 @@ def uploadevidence():
         db.session.commit()
         """
         gEvidenceFileName = "http://n-5cg5010gn7.nsn-intra.net:5001/"+'evidence'+'/'+gAPID+'/'+fname
-        #flash('Internal task material has been successfully uploaded!!')
-        return render_template('JIRAlogin4ApUpdate.html')
-        #return redirect(url_for('index'))
+
+        # return render_template('JIRAlogin4ApUpdate.html')
+        # return redirect(url_for('index'))
+        todo_item = TodoAP.query.get(gAPID)
+        JiraIssueId = todo_item.ApJiraId
+        print JiraIssueId
+        jira = getJira(g.user.username,gSSOPWD)
+        if jira == False:
+            flash('Connection with JIRA lost, Please redo login')
+            return redirect(url_for('logout'))
+        issue = jira.issue(JiraIssueId)
+        jira.add_attachment(issue,filename,fname)
+        rcaapevidence = gEvidenceFileName
+        dict1 = {'customfield_38032': rcaapevidence}
+        dict2 = {'customfield_38032': rcaapevidence}
+        issue.update(dict1)
+        if str(issue.fields.status) in ['Resolved','Closed']:
+            flash('JIRA Issue Satus already Resolved or Closed')
+        else:
+            jira.transition_issue(issue, JIRA_STATUS['Resolved'])
+        # todo_item = TodoAP.query.get(gAPID)
+        todo_item.APCompletedOn = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        todo_item.IsApCompleted = 'Yes'
+        db.session.commit()
+        flash('Evidence has been successfully uploaded!!')
+        flash('AP Status has been successfully updated!!!')
+        #return redirect(url_for('show_or_updateap', APID=gAPID))
+        return redirect(url_for('apindex'))
+
+
+@app.route('/uploadevidence1/<JiraIssueId>',methods=['GET', 'POST'], strict_slashes=False)
+@login_required
+def uploadevidence1(JiraIssueId):
+    if request.method == 'GET':
+        #TaskId = request.form['TaskId']
+        return render_template('uploadevidence.html')
+    else:
+        global gSSOPWD
+        file_dir = os.path.join(basedir, 'evidence')
+        file_dir = os.path.join(file_dir, JiraIssueId)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        f = request.files['fileField']
+        #if f and allowed_file(f.filename):
+        fname = f.filename.replace(' ','_')
+        fname = fname.strip()
+        #fname = f.filename
+        filename = os.path.join(file_dir, fname)
+        f.save(filename)
+        # gEvidenceFileName = filename
+        gEvidenceFileName = "http://n-5cg5010gn7.nsn-intra.net:5001/"+'evidence'+'/'+JiraIssueId+'/'+fname
+        flash('Evidence has been successfully uploaded!!')
+        # todo_item = TodoAP.query.get(gAPID)
+        # JiraIssueId = todo_item.ApJiraId
+        # print JiraIssueId
+        jira = getJira(g.user.username,gSSOPWD)
+        if jira == False:
+            flash('Connection with JIRA lost, Please redo login')
+            return redirect(url_for('logout'))
+        issue = jira.issue(JiraIssueId)
+        jira.add_attachment(issue, filename,fname)
+        rcaapevidence = gEvidenceFileName
+        dict1 = {'customfield_38032': rcaapevidence}
+        # dict2 = {'customfield_38032': rcaapevidence}
+        issue.update(dict1)
+        if str(issue.fields.status) in ['Resolved','Closed']:
+            flash('JIRA Issue Satus already Resolved or Closed')
+        else:
+            jira.transition_issue(issue, JIRA_STATUS['Resolved'])
+        # todo_item = TodoAP.query.get(gAPID)
+        # todo_item.APCompletedOn = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+        # todo_item.IsApCompleted = 'Yes'
+        # db.session.commit()
+        flash('AP Status has been successfully updated!!!')
+        #return redirect(url_for('show_or_updateap', APID=gAPID))
+        return redirect(url_for('index_by_assignee'))
 
 
 gAPID  = 'AP000001'
@@ -3238,17 +3375,6 @@ gAPID  = 'AP000001'
 def show_or_updateap(APID):
     global gAPID
     gAPID = APID
-    # global loginMode
-    # print loginMode
-    # if loginMode:
-    #     if g.user.username == 'qmxh38':
-    #         username = 'leienqing'
-    #     else:
-    #         username = addr_dict1[JiraUser.query.get(g.user.id).lineManagerEmail]
-    #     user = JiraUser.query.get(g.user.id).displayName
-    # else:
-    #     username = g.user.username
-    #     user = username
     user,username = getUserAndUserName()
     todo_item = TodoAP.query.get(APID)
     if request.method == 'GET':
@@ -3257,7 +3383,7 @@ def show_or_updateap(APID):
     elif request.method == 'POST':
         value = request.form['button']
         if value == 'Update':
-            if todo_item.QualityOwner == username or username in admin:
+            if todo_item.QualityOwner.strip() == username or username in admin:
                 todo_item = TodoAP.query.get(APID)
                 todo_item.PRID = request.form['PRID'].strip()
                 todo_item.APDescription  = request.form['APDescription']
@@ -3286,7 +3412,6 @@ def show_or_updateap(APID):
                 flash('You are not authorized to Delete this item', 'error')
                 return redirect(url_for('show_or_updateap', APID=APID, user=user))
             return redirect(url_for('apindex'))
-
 
 
 @app.route('/register' , methods=['GET','POST'])
@@ -3385,85 +3510,17 @@ def login():
         loginMode = ''
     login_user(user, remember = remember_me)
     flash('Logged in successfully')
-    return redirect(request.args.get('next') or url_for('index'))
-
-@app.route('/jiralogin', methods=['GET', 'POST'])
-def jiralogin():
-    if request.method == 'GET':
-        return render_template('login.html')
-
-    username = request.form['username']
-    password = request.form['password']
-    remember_me = False
-    if 'remember_me' in request.form:
-        # remember_me = BooleanField('Keep me logged in')
-        remember_me = True
-    try:
-        result,conn = JiraUser.try_login(username, password)
-    except ldap.INVALID_CREDENTIALS:
-        flash(
-            'Invalid username or password. Please try again.',
-            'danger')
-        return redirect(url_for('login'))
-    except:
-        flash(
-            'Network Issue.Cannot connect to LDAP server, Please check the Network and try again.',
-            'danger')
-        return redirect(url_for('login'))
-
-    email = result[0][1]['mail'][0]
-    displayName = result[0][1]['displayName'][0]
-    lineManagerAccountId = result[0][1]['nsnManagerAccountName'][0]
-    user = JiraUser.query.filter_by(username=username).first()
-    if not user:
-        filter = '(uid=%s)'%lineManagerAccountId
-        attrs = ['sn', 'mail', 'cn', 'displayName', 'nsnManagerAccountName']
-        base_dn = 'o=NSN'
-        lineResult = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
-        lineManagerDisplayName = lineResult[0][1]['displayName'][0]
-        lineManagerEmail = lineResult[0][1]['mail'][0]
-        link = "http://tdlte-report-server.china.nsn-net.net/api/get_user_info?u_id=%s" %username
-        r = requests.get(link)
-        if r.ok:
-            c = r.json()
-            d = c['sg_name']
-            squadGroupName = d
-        else:
-            squadGroupName = ''
-        user = JiraUser(username,email,displayName,lineManagerAccountId,lineManagerDisplayName,lineManagerEmail,squadGroupName)
-        db.session.add(user)
-        db.session.commit()
-    else:
-        lineManagerAccountId = result[0][1]['nsnManagerAccountName'][0]
-        filter = '(uid=%s)'%lineManagerAccountId
-        attrs = ['sn', 'mail', 'cn', 'displayName', 'nsnManagerAccountName']
-        base_dn = 'o=NSN'
-        lineResult = conn.search_s(base_dn, ldap.SCOPE_SUBTREE, filter, attrs)
-        user.lineManagerDisplayName = lineResult[0][1]['displayName'][0]
-        user.lineManagerEmail = lineResult[0][1]['mail'][0]
-        link = "http://tdlte-report-server.china.nsn-net.net/api/get_user_info?u_id=%s" %username
-        r = requests.get(link)
-        if r.ok:
-            c = r.json()
-            d = c['sg_name']
-            user.squadGroupName = d
-        else:
-            user.squadGroupName = ''
-        db.session.commit()
-
-    login_user(user, remember=remember_me)
-    flash('%s  --Logged in successfully!'%displayName)
-    redirect(url_for('home'))
-    return redirect(request.args.get('next') or url_for('index'))
+    return redirect(request.args.get('next') or url_for('home1'))
 
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index')) 
+    return redirect(url_for('home1'))
 
 @login_manager.user_loader
 def load_user(id):
-    if gSSOPWD: #JiraUser.query.get(int(id)):
+    global loginMode
+    if loginMode: #JiraUser.query.get(int(id)):
         return JiraUser.query.get(int(id))
     else:
         return User.query.get(int(id))
@@ -3475,8 +3532,9 @@ def before_request():
 @app.route('/home',methods=['GET','POST'])
 @login_required
 def jirahome():
+    user, username = getUserAndUserName()
     if request.method=='GET':
-        return render_template('jirahome.html',user=JiraUser.query.get(g.user.id).displayName)
+        return render_template('jirahome.html',user= user)
 
 @app.route('/jiraindex', methods=['GET', 'POST'])
 @login_required
@@ -3561,8 +3619,12 @@ def loadProntoInfo():
         try:
             r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
         except:
-            flash(' %s -- Invalid PRID has been input!'%PRID, 'error')
-            return render_template('jira_new.html', PRID=PRID)
+            if r.status_code == 404:
+                flash(' %s -- Invalid PRID has been input!'%PRID, 'error')
+                return render_template('jira_new.html', PRID=PRID)
+            if r.status_code == 401:
+                flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                return redirect('logout')
         a = r.json()
         InChargeGroupName = a['groupIncharge'].strip()
         user = InChargeGroup.query.filter_by(InChargeGroupName = InChargeGroupName).first()
@@ -3682,13 +3744,19 @@ def getLineManagerEmailBydisplayName(JiraIssueAssignee):
 
     return email,lineManagerEmail
 
-def createParent5WhyRcaTaskFirst(jira,PRID,request,JiraIssueAssignee):
-    url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
-    try:
-        r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
-    except:
-        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-        return render_template('jira_new.html', PRID=PRID)
+def createParent5WhyRcaTaskFirst(jira,PRID,request,r):
+    # url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+    # try:
+    #     r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+    # except:
+    #     # flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+    #     # return render_template('jira_new.html', PRID=PRID)
+    #     if r.status_code == 404:
+    #         flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+    #         return render_template('jira_new.html', PRID=PRID)
+    #     if r.status_code == 401:
+    #         flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+    #         return redirect('logout')
     a = r.json()
     PRAttached = ''
     for s in a['problemReportIds']:
@@ -3755,13 +3823,19 @@ def createParent5WhyRcaTaskFirst(jira,PRID,request,JiraIssueAssignee):
     newissue = jira.create_issue(issueaddforRCAsubtask)
     return newissue
 
-def create5WhyRcaTask(jira,PRID,request,JiraIssueAssignee):
-    url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
-    try:
-        r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
-    except:
-        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-        return render_template('jira_new.html', PRID=PRID)
+def create5WhyRcaTask(jira,PRID,request,JiraIssueAssignee,r):
+    # url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+    # try:
+    #     r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+    # except:
+    #     # flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+    #     # return render_template('jira_new.html', PRID=PRID)
+    #     if r.status_code == 404:
+    #         flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+    #         return render_template('jira_new.html', PRID=PRID)
+    #     if r.status_code == 401:
+    #         flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+    #         return redirect('logout')
     a = r.json()
     PRAttached = ''
     for s in a['problemReportIds']:
@@ -3887,7 +3961,7 @@ def create5WhyRcaTask(jira,PRID,request,JiraIssueAssignee):
 def addToJiraTodo(issue,PRID):
     JiraIssueId = str(issue.key)
     todo_item = JiraTodo.query.get(JiraIssueId)
-    if todo_item:  # PR in the rca table,just do the assignment and update assignee.
+    if todo_item:
         todo_item.JiraIssueStatus = str(issue.fields.status)
         db.session.commit()
     else:
@@ -3937,8 +4011,14 @@ def addToJiraTodo(issue,PRID):
         url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
         r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
         if r.ok == False:
-            flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-            print PRID
+            # flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+            # print PRID
+            if r.status_code == 404:
+                flash(' %s -- Invalid PRID has been input!'%PRID, 'error')
+                return render_template('jira_new.html', PRID=PRID)
+            if r.status_code == 401:
+                flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                return redirect('logout')
         a = r.json()
         PRSeverity = a['severity'].strip()
         PRRelease = a['softwareRelease'].strip()
@@ -3980,7 +4060,7 @@ AnalysisIssueCaseType = {'RCA':u'219575','EDA':u'219576','RCA and EDA':'219892'}
 ChildIssueType = {'Analysis subtask':u'19800','Action for RCA':u'19804','Action for EDA':u'19806'}
 ErrorCode =['Parent5WhyRCAnoExist',{'RCA':'RCAsubtaskDuplicate','EDA':'EDAsubtaskDuplicate','RCA and EDA':'RCAandEDAsubtaskDuplicate'},'OK']
 
-def createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee):
+def createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee,r):
     issues = jira.search_issues(jql_str='project = MNPRCA AND summary~' + PRID + ' AND type = "5WhyRCA" ',maxResults=5)
     existFlag = False
     for issue in issues:
@@ -4014,6 +4094,7 @@ def createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee):
             }
             newissue = jira.create_issue(issueaddforRCAsubtask)
             addToJiraTodo(newissue, PRID)
+            addTodo(PRID, newissue.key, JiraIssueAssignee)
             flash('Jira item was successfully created')
             return newissue, ErrorCode[2]
         else: #Parent task has subtask,need to avoid duplication
@@ -4040,9 +4121,11 @@ def createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee):
                 newissue = jira.create_issue(issueaddforRCAsubtask)
                 flash('Jira item was successfully created')
                 addToJiraTodo(newissue, PRID)
+                addTodo(PRID, newissue.key, JiraIssueAssignee)
                 return newissue,ErrorCode[2]
     else: #Parent 5WhyRCA task not exist,to create Parent
-        issue = createParent5WhyRcaTaskFirst(jira, PRID, request, JiraIssueAssignee)
+
+        issue = createParent5WhyRcaTaskFirst(jira, PRID, request, r)
         RcaAnalysisSubtaskKey = issue.key
         # Jira RCA Analysis Subtask
         summaryinfo = '%s for ' % CaseType + PRID
@@ -4057,6 +4140,7 @@ def createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee):
         }
         newissue = jira.create_issue(issueaddforRCAsubtask)
         addToJiraTodo(newissue,PRID)
+        addTodo(PRID, newissue.key, JiraIssueAssignee)
         flash('Jira item was successfully created')
         return newissue, ErrorCode[2]
 
@@ -4076,13 +4160,33 @@ def jiranew():
             JiraIssueAssignee = request.form['AssignTo'].strip()
             JiraIssueAssignee = getAccountIdByEmailName(JiraIssueAssignee)
             if RCAEDAType == '5WhyRCA':
-                create5WhyRcaTask(jira,PRID,request,JiraIssueAssignee)
+                url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+                try:
+                    r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                except:
+                    if r.status_code == 404:
+                        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                        return render_template('jira_new.html', PRID=PRID)
+                    if r.status_code == 401:
+                        flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                        return redirect('logout')
+                create5WhyRcaTask(jira,PRID,request,JiraIssueAssignee,r)
             elif RCAEDAType == 'Analysis subtask':
                 if not request.form['CaseType']:
                     flash('CaseType for Analysis subtask is required', 'error')
                     return render_template('jiranew.html', user=JiraUser.query.get(g.user.id).displayName)
                 CaseType = request.form['CaseType']
-                newissue,result = createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee)
+                url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+                try:
+                    r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
+                except:
+                    if r.status_code == 404:
+                        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                        return render_template('jira_new.html', PRID=PRID)
+                    if r.status_code == 401:
+                        flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                        return redirect('logout')
+                newissue,result = createAnalysisSubtask(jira,PRID,CaseType,JiraIssueAssignee,r)
                 if newissue:
                     flash('Analysis subtask has been created!!!')
                 else:
@@ -4177,23 +4281,17 @@ def importinchargegroupfromexcel():
     return redirect(url_for('InChargeGroupIndex'))
 
 def getJira(username,userpwd):
-    aa = username
-    bb = userpwd
+    print 'Connecting JIRA...'
     options = {'server': 'https://jiradc.int.net.nokia.com/'}
-    _conn_status = True
-    _conn_retry_count = 0
-    while _conn_status:
-        try:
-            _conn_status = False
-            print 'Connecting JIRA...'
-            jira = JIRA(options, basic_auth=(aa, bb))
-            return jira
-        except:
-            _conn_retry_count += 1
-            print ("_conn_retry_count=%d" % _conn_retry_count)
-        print 'ProntoDb connecting Error'
-        time.sleep(10)
-        contiue
+    try:
+        jira = JIRA(options, basic_auth=(username, userpwd),max_retries = 2, timeout= 10)
+    except:
+        print 'JIRA connecting Error'
+        flash('Connection with JIRA lost, Please redo login')
+        #return redirect(url_for('logout'))
+        return False
+    return jira
+
 @app.route('/index_by_assignee',methods=['GET','POST'])
 @login_required
 def index_by_assignee():
@@ -4283,8 +4381,14 @@ def index_by_assignee():
                 try:
                     r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
                 except:
-                    flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-                    print PRID
+                    # flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                    # print PRID
+                    if r.status_code == 404:
+                        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                        return render_template('jira_new.html', PRID=PRID)
+                    if r.status_code == 401:
+                        flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                        return redirect('logout')
                 a = r.json()
 
                 PRSeverity = a['severity'].strip()
@@ -4416,11 +4520,17 @@ def index_by_reporter():
                 if PRID in ('5WhyRca Parent Task for CAS-154355-C888-Test','PR1234','Light Weight RCA','5WhyRca Parent Task for PR389995'):
                     continue
                 url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
-
                 r = requests.get(url, verify=False, auth=(g.user.username, gSSOPWD))
                 if r.ok == False:
-                    flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
-                    print PRID
+                    # flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                    # print PRID
+                    if r.status_code == 404:
+                        flash(' %s -- Invalid PRID has been input!' % PRID, 'error')
+                        return render_template('home.html', PRID=PRID)
+                    if r.status_code == 401:
+                        flash("Pronto Management Systme Connection lost, please re-login the Tool!!")
+                        return redirect('logout')
+
                 a = r.json()
 
                 PRSeverity = a['severity'].strip()
@@ -4594,12 +4704,17 @@ def jirashow_or_update(JiraIssueId):
             return redirect(url_for('jirashow_or_update', JiraIssueId=JiraIssueId))
             return redirect(url_for('jiraindex'))
         elif value == 'uploadevidenceforapcompletion':
-            flash('You are not authorized to handle this item', 'error')
-            return redirect(url_for('show_or_update', PRID=PRID))
+            #flash('You are not authorized to handle this item', 'error')
+            todo_item = TodoAP.query.get(JiraIssueId)
+            if todo_item:
+                APID = todo_item.APID
+                return redirect(url_for('show_or_updateap', APID = APID))
+            else:
+                return redirect(url_for('uploadevidence1',JiraIssueId = JiraIssueId))
             # resolve the AP
-        else:
-            flash('You are not authorized to handle this item', 'error')
-            return redirect(url_for('show_or_update', PRID=PRID))
+        # else:
+        #     flash('You are not authorized to handle this item', 'error')
+        #     return redirect(url_for('show_or_update', PRID=PRID))
 
 admin=['leienqing',]
 @app.route('/jirarca_home',methods=['GET','POST'])
@@ -4725,6 +4840,19 @@ def addColumn():
         #alter table user MODIFY new1 VARCHAR(1) -->modify field type
         _SQL = "alter table apstatus ADD column jirauser_id Integer"
         cursor.execute(_SQL)
+
+@app.route('/hello',methods=['GET','POST'])
+def jiraresponse():
+    PRID = 'CAS-148023-Z0D'
+    url = "https://pronto.inside.nsn.com/prontoapi/rest/api/latest/problemReport/%s" % PRID
+    r = requests.get(url, verify=False, auth=('qmxh38', '***'))
+    if r.status_code == 401:
+        print "Password Error"
+    if r.status_code == 404:
+        print 'Pronto not exist'
+    jira =  getJira('lei','qqqq')
+
+    return redirect(url_for(login))
 
 if __name__ == '__main__':
     #modifyColumn()
